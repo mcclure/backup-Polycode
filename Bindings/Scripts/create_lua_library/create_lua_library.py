@@ -485,6 +485,11 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 	fout.write(sout)
 	
 	#print cppHeader
-	
-createLUABindings(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6], sys.argv[7], sys.argv[8], sys.argv[9])
-	
+
+returncode = 0
+
+if len(sys.argv) < 10:
+	print ("Usage:\n%s [input path] [prefix] [main include] [lib small name] [lib name] [api path] [api class-path] [include path] [source path]" % (sys.argv[0]))
+	sys.exit(1)
+else:
+	createLUABindings(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6], sys.argv[7], sys.argv[8], sys.argv[9])
