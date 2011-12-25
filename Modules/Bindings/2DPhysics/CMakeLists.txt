@@ -28,12 +28,14 @@ ADD_LIBRARY(Physics2D SHARED ${polycode2DPhysics_SRCS} ${polycode2DPhysics_HDRS}
 SET(CMAKE_DEBUG_POSTFIX "_d")
 
 SET_TARGET_PROPERTIES(Physics2D PROPERTIES PREFIX "")
+
+IF(APPLE)
 TARGET_LINK_LIBRARIES(Physics2D
 	Polycore
 	${LUA_LIBRARY}
 	${BOX2D_RELEASE_LIBRARY}
-        "-framework Cocoa"
-        "-framework IOKit"
+	"-framework Cocoa"
+	"-framework IOKit"
         ${OPENGL_LIBRARIES}
         ${OPENAL_LIBRARY}
         ${PNG_LIBRARIES}
@@ -43,6 +45,21 @@ TARGET_LINK_LIBRARIES(Physics2D
         ${VORBIS_LIBRARIES}
         ${VORBISFILE_LIBRARIES}
         ${EXTRA_LIBS})
+ELSE(APPLE)
+TARGET_LINK_LIBRARIES(Physics2D
+	Polycore
+	${LUA_LIBRARY}
+	${BOX2D_RELEASE_LIBRARY}
+        ${OPENGL_LIBRARIES}
+        ${OPENAL_LIBRARY}
+        ${PNG_LIBRARIES}
+        ${FREETYPE_LIBRARIES}
+        ${PHYSFS_LIBRARY}
+        ${OGG_LIBRARIES}
+        ${VORBIS_LIBRARIES}
+        ${VORBISFILE_LIBRARIES}
+        ${EXTRA_LIBS})
+ENDIF(APPLE)
 
 IF(POLYCODE_INSTALL_FRAMEWORK)
     

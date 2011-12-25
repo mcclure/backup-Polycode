@@ -829,7 +829,25 @@ static int Polycore_Camera_hasFilterShader(lua_State *L) {
 static int Polycore_Camera_drawFilter(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Camera *inst = (Camera*)lua_topointer(L, 1);
-	inst->drawFilter();
+	Texture* targetTexture;
+	if(lua_islightuserdata(L, 2)) {
+		targetTexture = (Texture*)lua_topointer(L, 2);
+	} else {
+		targetTexture = NULL;
+	}
+	Number targetTextureWidth;
+	if(lua_isnumber(L, 3)) {
+		targetTextureWidth = lua_tonumber(L, 3);
+	} else {
+		targetTextureWidth = 0.0;
+	}
+	Number targetTextureHeight;
+	if(lua_isnumber(L, 4)) {
+		targetTextureHeight = lua_tonumber(L, 4);
+	} else {
+		targetTextureHeight = 0.0;
+	}
+	inst->drawFilter(targetTexture, targetTextureWidth, targetTextureHeight);
 	return 0;
 }
 
@@ -1524,6 +1542,94 @@ static int Polycore_CoreInput_getMouseButtonState(lua_State *L) {
 	int mouseButton = lua_tointeger(L, 2);
 	lua_pushboolean(L, inst->getMouseButtonState(mouseButton));
 	return 1;
+}
+
+static int Polycore_CoreInput_getNumJoysticks(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	CoreInput *inst = (CoreInput*)lua_topointer(L, 1);
+	lua_pushinteger(L, inst->getNumJoysticks());
+	return 1;
+}
+
+static int Polycore_CoreInput_getJoystickInfoByIndex(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	CoreInput *inst = (CoreInput*)lua_topointer(L, 1);
+	luaL_checktype(L, 2, LUA_TNUMBER);
+	unsigned int index = lua_tointeger(L, 2);
+	void *ptrRetVal = (void*)inst->getJoystickInfoByIndex(index);
+	if(ptrRetVal == NULL) {
+		lua_pushnil(L);
+	} else {
+		lua_pushlightuserdata(L, ptrRetVal);
+	}
+	return 1;
+}
+
+static int Polycore_CoreInput_getJoystickInfoByID(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	CoreInput *inst = (CoreInput*)lua_topointer(L, 1);
+	luaL_checktype(L, 2, LUA_TNUMBER);
+	unsigned int deviceID = lua_tointeger(L, 2);
+	void *ptrRetVal = (void*)inst->getJoystickInfoByID(deviceID);
+	if(ptrRetVal == NULL) {
+		lua_pushnil(L);
+	} else {
+		lua_pushlightuserdata(L, ptrRetVal);
+	}
+	return 1;
+}
+
+static int Polycore_CoreInput_addJoystick(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	CoreInput *inst = (CoreInput*)lua_topointer(L, 1);
+	luaL_checktype(L, 2, LUA_TNUMBER);
+	unsigned int deviceID = lua_tointeger(L, 2);
+	inst->addJoystick(deviceID);
+	return 0;
+}
+
+static int Polycore_CoreInput_removeJoystick(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	CoreInput *inst = (CoreInput*)lua_topointer(L, 1);
+	luaL_checktype(L, 2, LUA_TNUMBER);
+	unsigned int deviceID = lua_tointeger(L, 2);
+	inst->removeJoystick(deviceID);
+	return 0;
+}
+
+static int Polycore_CoreInput_joystickAxisMoved(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	CoreInput *inst = (CoreInput*)lua_topointer(L, 1);
+	luaL_checktype(L, 2, LUA_TNUMBER);
+	unsigned int axisID = lua_tointeger(L, 2);
+	luaL_checktype(L, 3, LUA_TNUMBER);
+	float value = lua_tonumber(L, 3);
+	luaL_checktype(L, 4, LUA_TNUMBER);
+	unsigned int deviceID = lua_tointeger(L, 4);
+	inst->joystickAxisMoved(axisID, value, deviceID);
+	return 0;
+}
+
+static int Polycore_CoreInput_joystickButtonDown(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	CoreInput *inst = (CoreInput*)lua_topointer(L, 1);
+	luaL_checktype(L, 2, LUA_TNUMBER);
+	unsigned int buttonID = lua_tointeger(L, 2);
+	luaL_checktype(L, 3, LUA_TNUMBER);
+	unsigned int deviceID = lua_tointeger(L, 3);
+	inst->joystickButtonDown(buttonID, deviceID);
+	return 0;
+}
+
+static int Polycore_CoreInput_joystickButtonUp(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	CoreInput *inst = (CoreInput*)lua_topointer(L, 1);
+	luaL_checktype(L, 2, LUA_TNUMBER);
+	unsigned int buttonID = lua_tointeger(L, 2);
+	luaL_checktype(L, 3, LUA_TNUMBER);
+	unsigned int deviceID = lua_tointeger(L, 3);
+	inst->joystickButtonUp(buttonID, deviceID);
+	return 0;
 }
 
 static int Polycore_CoreInput_mouseWheelUp(lua_State *L) {
@@ -3452,6 +3558,34 @@ static int Polycore_InputEvent_get_timestamp(lua_State *L) {
 	return 1;
 }
 
+static int Polycore_InputEvent_get_joystickDeviceID(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	InputEvent *inst = (InputEvent*)lua_topointer(L, 1);
+	lua_pushlightuserdata(L, &inst->joystickDeviceID);
+	return 1;
+}
+
+static int Polycore_InputEvent_get_joystickAxisValue(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	InputEvent *inst = (InputEvent*)lua_topointer(L, 1);
+	lua_pushlightuserdata(L, &inst->joystickAxisValue);
+	return 1;
+}
+
+static int Polycore_InputEvent_get_joystickButton(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	InputEvent *inst = (InputEvent*)lua_topointer(L, 1);
+	lua_pushlightuserdata(L, &inst->joystickButton);
+	return 1;
+}
+
+static int Polycore_InputEvent_get_joystickAxis(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	InputEvent *inst = (InputEvent*)lua_topointer(L, 1);
+	lua_pushlightuserdata(L, &inst->joystickAxis);
+	return 1;
+}
+
 static int Polycore_InputEvent_set_mouseButton(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	InputEvent *inst = (InputEvent*)lua_topointer(L, 1);
@@ -3469,11 +3603,7 @@ static int Polycore_InputEvent_set_timestamp(lua_State *L) {
 }
 
 static int Polycore_InputEvent(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
-	Vector2 mousePosition = *(Vector2*)lua_topointer(L, 1);
-	luaL_checktype(L, 2, LUA_TNUMBER);
-	int timestamp = lua_tointeger(L, 2);
-	InputEvent *inst = new InputEvent(mousePosition, timestamp);
+	InputEvent *inst = new InputEvent();
 	lua_pushlightuserdata(L, (void*)inst);
 	return 1;
 }
@@ -3628,6 +3758,13 @@ static int Polycore_Material_get_specularValue(lua_State *L) {
 	return 1;
 }
 
+static int Polycore_Material_get_specularStrength(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Material *inst = (Material*)lua_topointer(L, 1);
+	lua_pushnumber(L, inst->specularStrength);
+	return 1;
+}
+
 static int Polycore_Material_get_specularColor(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Material *inst = (Material*)lua_topointer(L, 1);
@@ -3647,6 +3784,14 @@ static int Polycore_Material_set_specularValue(lua_State *L) {
 	Material *inst = (Material*)lua_topointer(L, 1);
 	Number param = lua_tonumber(L, 2);
 	inst->specularValue = param;
+	return 0;
+}
+
+static int Polycore_Material_set_specularStrength(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Material *inst = (Material*)lua_topointer(L, 1);
+	Number param = lua_tonumber(L, 2);
+	inst->specularStrength = param;
 	return 0;
 }
 
@@ -4403,6 +4548,13 @@ static int Polycore_Mesh_calculateNormals(lua_State *L) {
 		smoothAngle = 90.0;
 	}
 	inst->calculateNormals(smooth, smoothAngle);
+	return 0;
+}
+
+static int Polycore_Mesh_calculateTangents(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Mesh *inst = (Mesh*)lua_topointer(L, 1);
+	inst->calculateTangents();
 	return 0;
 }
 
@@ -5390,11 +5542,27 @@ static int Polycore_Polygon_calculateNormal(lua_State *L) {
 	return 0;
 }
 
+static int Polycore_Polygon_calculateTangent(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Polygon *inst = (Polygon*)lua_topointer(L, 1);
+	inst->calculateTangent();
+	return 0;
+}
+
 static int Polycore_Polygon_getFaceNormal(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Polygon *inst = (Polygon*)lua_topointer(L, 1);
 	Vector3 *retInst = new Vector3();
 	*retInst = inst->getFaceNormal();
+	lua_pushlightuserdata(L, retInst);
+	return 1;
+}
+
+static int Polycore_Polygon_getFaceTangent(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Polygon *inst = (Polygon*)lua_topointer(L, 1);
+	Vector3 *retInst = new Vector3();
+	*retInst = inst->getFaceTangent();
 	lua_pushlightuserdata(L, retInst);
 	return 1;
 }
@@ -5976,6 +6144,15 @@ static int Polycore_Renderer_createTexture(lua_State *L) {
 	return 1;
 }
 
+static int Polycore_Renderer_destroyTexture(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Renderer *inst = (Renderer*)lua_topointer(L, 1);
+	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
+	Texture* texture = (Texture*)lua_topointer(L, 2);
+	inst->destroyTexture(texture);
+	return 0;
+}
+
 static int Polycore_Renderer_createRenderTextures(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Renderer *inst = (Renderer*)lua_topointer(L, 1);
@@ -6041,6 +6218,15 @@ static int Polycore_Renderer_renderZBufferToTexture(lua_State *L) {
 	return 0;
 }
 
+static int Polycore_Renderer_setFOV(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Renderer *inst = (Renderer*)lua_topointer(L, 1);
+	luaL_checktype(L, 2, LUA_TNUMBER);
+	Number fov = lua_tonumber(L, 2);
+	inst->setFOV(fov);
+	return 0;
+}
+
 static int Polycore_Renderer_setViewportSize(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Renderer *inst = (Renderer*)lua_topointer(L, 1);
@@ -6048,13 +6234,27 @@ static int Polycore_Renderer_setViewportSize(lua_State *L) {
 	int w = lua_tointeger(L, 2);
 	luaL_checktype(L, 3, LUA_TNUMBER);
 	int h = lua_tointeger(L, 3);
-	Number fov;
-	if(lua_isnumber(L, 4)) {
-		fov = lua_tonumber(L, 4);
-	} else {
-		fov = 45.0f;
-	}
-	inst->setViewportSize(w, h, fov);
+	inst->setViewportSize(w, h);
+	return 0;
+}
+
+static int Polycore_Renderer_setViewportSizeAndFOV(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Renderer *inst = (Renderer*)lua_topointer(L, 1);
+	luaL_checktype(L, 2, LUA_TNUMBER);
+	int w = lua_tointeger(L, 2);
+	luaL_checktype(L, 3, LUA_TNUMBER);
+	int h = lua_tointeger(L, 3);
+	luaL_checktype(L, 4, LUA_TNUMBER);
+	Number fov = lua_tonumber(L, 4);
+	inst->setViewportSizeAndFOV(w, h, fov);
+	return 0;
+}
+
+static int Polycore_Renderer_resetViewport(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Renderer *inst = (Renderer*)lua_topointer(L, 1);
+	inst->resetViewport();
 	return 0;
 }
 
@@ -6175,15 +6375,6 @@ static int Polycore_Renderer_scale2D(lua_State *L) {
 	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
 	Vector2* scale = (Vector2*)lua_topointer(L, 2);
 	inst->scale2D(scale);
-	return 0;
-}
-
-static int Polycore_Renderer_setFOV(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
-	Renderer *inst = (Renderer*)lua_topointer(L, 1);
-	luaL_checktype(L, 2, LUA_TNUMBER);
-	Number fov = lua_tonumber(L, 2);
-	inst->setFOV(fov);
 	return 0;
 }
 
@@ -6719,6 +6910,20 @@ static int Polycore_Renderer_enableShaders(lua_State *L) {
 	return 0;
 }
 
+static int Polycore_Renderer_getViewportWidth(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Renderer *inst = (Renderer*)lua_topointer(L, 1);
+	lua_pushnumber(L, inst->getViewportWidth());
+	return 1;
+}
+
+static int Polycore_Renderer_getViewportHeight(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Renderer *inst = (Renderer*)lua_topointer(L, 1);
+	lua_pushnumber(L, inst->getViewportHeight());
+	return 1;
+}
+
 static int Polycore_Renderer_initOSSpecific(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Renderer *inst = (Renderer*)lua_topointer(L, 1);
@@ -7109,6 +7314,27 @@ static int Polycore_Scene_getDefaultCamera(lua_State *L) {
 	return 1;
 }
 
+static int Polycore_Scene_getActiveCamera(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Scene *inst = (Scene*)lua_topointer(L, 1);
+	void *ptrRetVal = (void*)inst->getActiveCamera();
+	if(ptrRetVal == NULL) {
+		lua_pushnil(L);
+	} else {
+		lua_pushlightuserdata(L, ptrRetVal);
+	}
+	return 1;
+}
+
+static int Polycore_Scene_setActiveCamera(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Scene *inst = (Scene*)lua_topointer(L, 1);
+	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
+	Camera* camera = (Camera*)lua_topointer(L, 2);
+	inst->setActiveCamera(camera);
+	return 0;
+}
+
 static int Polycore_Scene_enableLighting(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Scene *inst = (Scene*)lua_topointer(L, 1);
@@ -7473,17 +7699,6 @@ static int Polycore_SceneLabel(lua_State *L) {
 	return 1;
 }
 
-static int Polycore_SceneLabel_testMouseCollision(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
-	SceneLabel *inst = (SceneLabel*)lua_topointer(L, 1);
-	luaL_checktype(L, 2, LUA_TNUMBER);
-	Number x = lua_tonumber(L, 2);
-	luaL_checktype(L, 3, LUA_TNUMBER);
-	Number y = lua_tonumber(L, 3);
-	lua_pushboolean(L, inst->testMouseCollision(x, y));
-	return 1;
-}
-
 static int Polycore_SceneLabel_setText(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	SceneLabel *inst = (SceneLabel*)lua_topointer(L, 1);
@@ -7503,13 +7718,6 @@ static int Polycore_SceneLabel_getLabel(lua_State *L) {
 		lua_pushlightuserdata(L, ptrRetVal);
 	}
 	return 1;
-}
-
-static int Polycore_SceneLabel_Render(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
-	SceneLabel *inst = (SceneLabel*)lua_topointer(L, 1);
-	inst->Render();
-	return 0;
 }
 
 static int Polycore_delete_SceneLabel(lua_State *L) {
@@ -7867,6 +8075,15 @@ static int Polycore_SceneManager_registerRenderTexture(lua_State *L) {
 	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
 	SceneRenderTexture* r_enderTexture = (SceneRenderTexture*)lua_topointer(L, 2);
 	inst->registerRenderTexture(r_enderTexture);
+	return 0;
+}
+
+static int Polycore_SceneManager_unregisterRenderTexture(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	SceneManager *inst = (SceneManager*)lua_topointer(L, 1);
+	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
+	SceneRenderTexture* r_enderTexture = (SceneRenderTexture*)lua_topointer(L, 2);
+	inst->unregisterRenderTexture(r_enderTexture);
 	return 0;
 }
 
@@ -11066,10 +11283,24 @@ static int Polycore_Vertex_get_normal(lua_State *L) {
 	return 1;
 }
 
+static int Polycore_Vertex_get_tangent(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Vertex *inst = (Vertex*)lua_topointer(L, 1);
+	lua_pushlightuserdata(L, &inst->tangent);
+	return 1;
+}
+
 static int Polycore_Vertex_get_vertexColor(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Vertex *inst = (Vertex*)lua_topointer(L, 1);
 	lua_pushlightuserdata(L, &inst->vertexColor);
+	return 1;
+}
+
+static int Polycore_Vertex_get_texCoord(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Vertex *inst = (Vertex*)lua_topointer(L, 1);
+	lua_pushlightuserdata(L, &inst->texCoord);
 	return 1;
 }
 

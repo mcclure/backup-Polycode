@@ -76,9 +76,15 @@ class _PolyExport PhysicsScreenEvent : public Event {
 		Vector2 worldCollisionNormal;
 		
 		/**
-		* Collision point
+		* Collision point in local space
 		*/			
 		Vector2 localCollisionPoint;
+
+		/**
+		* Collision point in world space
+		*/			
+		Vector2 worldCollisionPoint;
+
 			
 		/**
 		* Strength of the collision impact.
@@ -175,7 +181,11 @@ public:
 	* Removes a physics child from the screen.
 	* @param entityToRemove Entity to remove from the screen.
 	*/
-	void removePhysicsChild(PhysicsScreenEntity *entityToRemove);
+	void removePhysicsChild(ScreenEntity *entityToRemove);
+	
+	
+	ScreenEntity* removeChild(ScreenEntity *entityToRemove);
+	
 	
 	/**
 	* Begins tracking collisions for a ScreenEntity.

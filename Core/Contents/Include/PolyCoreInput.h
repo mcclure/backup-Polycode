@@ -29,16 +29,22 @@ THE SOFTWARE.
 
 namespace Polycode {
 	
+	class JoystickInfo {
+		public:
+			JoystickInfo();
+			
+			float joystickAxisState[32];
+			bool joystickButtonState[64];
+			unsigned int deviceID;		
+	};
+	
 	class InputEvent;
 
 	/**
 	* User input event dispatcher. The Core input class is where all of the input events originate. You can add event listeners to this class to listen for user input events or poll it manually to check the state of user input.
 	*/
 	class _PolyExport CoreInput : public EventDispatcher {
-		
-		friend class PolyCore;
-		
-	public:
+		public:
 		
 		CoreInput();
 		~CoreInput();
@@ -84,7 +90,16 @@ namespace Polycode {
 		*/								
 		bool getMouseButtonState(int mouseButton);		
 
-		
+		unsigned int getNumJoysticks();
+		JoystickInfo *getJoystickInfoByIndex(unsigned int index);
+
+		JoystickInfo *getJoystickInfoByID(unsigned int deviceID);
+		void addJoystick(unsigned int deviceID);
+		void removeJoystick(unsigned int deviceID);
+		void joystickAxisMoved(unsigned int axisID, float value, unsigned int deviceID);
+		void joystickButtonDown(unsigned int buttonID, unsigned int deviceID);
+		void joystickButtonUp(unsigned int buttonID, unsigned int deviceID);
+						
 		void mouseWheelUp(int ticks);
 		void mouseWheelDown(int ticks);
 		void setMouseButtonState(int mouseButton, bool state, int ticks);
@@ -98,6 +113,7 @@ namespace Polycode {
 		
 	protected:
 		
+		std::vector<JoystickInfo> joysticks;
 		bool keyboardState[512];
 		bool mouseButtons[3];
 		Vector2 mousePosition;

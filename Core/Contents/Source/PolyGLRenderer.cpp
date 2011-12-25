@@ -134,6 +134,8 @@ void OpenGLRenderer::initOSSpecific(){
 void OpenGLRenderer::Resize(int xRes, int yRes) {
 	this->xRes = xRes;
 	this->yRes = yRes;
+	viewportWidth = xRes;
+	viewportHeight = xRes;
 	glClearColor(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
 	glClearDepth(1.0f);
 	
@@ -191,23 +193,14 @@ void OpenGLRenderer::setLineSmooth(bool val) {
 		glDisable(GL_LINE_SMOOTH);
 }
 
-void OpenGLRenderer::setFOV(Number fov) {
-	this->fov = fov;
+void OpenGLRenderer::resetViewport() {
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(fov,(GLfloat)xRes/(GLfloat)yRes,nearPlane,farPlane);	
-	glViewport(0, 0, xRes, yRes);
-	glScissor(0, 0, xRes, yRes);
+	gluPerspective(fov,(GLfloat)viewportWidth/(GLfloat)viewportHeight,nearPlane,farPlane);	
+	glViewport(0, 0, viewportWidth, viewportHeight);
+	glScissor(0, 0, viewportWidth, viewportHeight);
 	glMatrixMode(GL_MODELVIEW);	
-}
 
-void OpenGLRenderer::setViewportSize(int w, int h, Number fov) {
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	gluPerspective(fov,(GLfloat)w/(GLfloat)h,nearPlane,farPlane);
-	glViewport(0, 0, w, h);
-	glScissor(0, 0, w, h);
-	glMatrixMode(GL_MODELVIEW);
 }
 
 Vector3 OpenGLRenderer::Unproject(Number x, Number y) {
@@ -587,10 +580,8 @@ void OpenGLRenderer::unbindFramebuffers() {
 }
 
 
-void OpenGLRenderer::createRenderTextures(Texture **colorBuffer, Texture **depthBuffer, int width, int height) {
-	
-	Logger::log("generating fbo textures %d %d\n", colorBuffer, depthBuffer);	
-		
+void OpenGLRenderer::createRenderTextures(Texture **colorBuffer, Texture **depthBuffer, int width, int height, bool floatingPointBuffer) {
+			
 	GLuint depthTexture,colorTexture;
 	GLenum status;
 	GLuint frameBufferID;
@@ -604,8 +595,13 @@ void OpenGLRenderer::createRenderTextures(Texture **colorBuffer, Texture **depth
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);	
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
-
+	
+	if(floatingPointBuffer) {
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F_ARB, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+	} else {
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);	
+	}
+	
 	glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, colorTexture, 0);
 
 	status = glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT);
@@ -664,9 +660,14 @@ Cubemap *OpenGLRenderer::createCubemap(Texture *t0, Texture *t1, Texture *t2, Te
 	return newCubemap;
 }
 
-Texture *OpenGLRenderer::createTexture(unsigned int width, unsigned int height, char *textureData, bool clamp, int type) {
-	OpenGLTexture *newTexture = new OpenGLTexture(width, height, textureData, clamp, textureFilteringMode, type);	
+Texture *OpenGLRenderer::createTexture(unsigned int width, unsigned int height, char *textureData, bool clamp, bool createMipmaps, int type) {
+	OpenGLTexture *newTexture = new OpenGLTexture(width, height, textureData, clamp, createMipmaps, textureFilteringMode, type);
 	return newTexture;
+}
+
+void OpenGLRenderer::destroyTexture(Texture *texture) {
+	OpenGLTexture *glTex = (OpenGLTexture*)texture;
+	delete glTex;
 }
 
 void OpenGLRenderer::clearScreen() {
@@ -718,7 +719,7 @@ void OpenGLRenderer::applyMaterial(Material *material,  ShaderBinding *localOpti
 	data4[0] = material->specularColor.r;
 	data4[1] = material->specularColor.g;
 	data4[2] = material->specularColor.b;
-	data4[3] = material->specularColor.a;
+	data4[3] = material->specularStrength;
 				
 	glMaterialfv(GL_FRONT, GL_SPECULAR, data4);
 
@@ -827,6 +828,11 @@ void OpenGLRenderer::pushRenderDataArray(RenderDataArray *array) {
 			glBindBufferARB( GL_ARRAY_BUFFER_ARB, 0);			
 			glNormalPointer(GL_FLOAT, 0, array->arrayPtr);	
 		break;
+		case RenderDataArray::TANGENT_DATA_ARRAY:
+			glEnableVertexAttribArrayARB(6);		
+			glVertexAttribPointer(6, array->size, GL_FLOAT, 0, 0, array->arrayPtr);
+		break;
+		
 	}
 }
 
@@ -893,6 +899,22 @@ RenderDataArray *OpenGLRenderer::createRenderDataArrayForMesh(Mesh *mesh, int ar
 			}			
 		}
 		break;
+		case RenderDataArray::TANGENT_DATA_ARRAY:
+		{
+			buffer = (GLfloat*)malloc(1);	
+			
+			for(int i=0; i < mesh->getPolygonCount(); i++) {
+				for(int j=0; j < mesh->getPolygon(i)->getVertexCount(); j++) {
+					newBufferSize = bufferSize + 3;			
+					buffer = (GLfloat*)realloc(buffer, newBufferSize * sizeof(GLfloat));		
+					buffer[bufferSize+0] = mesh->getPolygon(i)->getVertex(j)->tangent.x;
+					buffer[bufferSize+1] = mesh->getPolygon(i)->getVertex(j)->tangent.y;
+					buffer[bufferSize+2] = mesh->getPolygon(i)->getVertex(j)->tangent.z;				
+					bufferSize = newBufferSize;					
+				}		   
+			}			
+		}
+		break;		
 		case RenderDataArray::TEXCOORD_DATA_ARRAY:
 		{
 			buffer = (GLfloat*)malloc(1);				
@@ -935,7 +957,10 @@ RenderDataArray *OpenGLRenderer::createRenderDataArray(int arrayType) {
 			break;			
 		case RenderDataArray::NORMAL_DATA_ARRAY:
 			newArray->size = 3;
-			break;						
+			break;	
+		case RenderDataArray::TANGENT_DATA_ARRAY:
+			newArray->size = 3;
+			break;														
 		case RenderDataArray::TEXCOORD_DATA_ARRAY:
 			newArray->size = 2;
 			break;									
@@ -1021,8 +1046,8 @@ void OpenGLRenderer::draw3DVertex2UV(Vertex *vertex, Vector2 *faceUV1, Vector2 *
 void OpenGLRenderer::drawScreenQuad(Number qx, Number qy) {
 	setOrthoMode();
 	
-	Number xscale = qx/((Number)getXRes()) * 2.0f;
-	Number yscale = qy/((Number)getYRes()) * 2.0f;
+	Number xscale = qx/((Number)viewportWidth) * 2.0f;
+	Number yscale = qy/((Number)viewportHeight) * 2.0f;	
 
 	glBegin(GL_QUADS);
 		glColor4f(1.0f,1.0f,1.0f,1.0f);

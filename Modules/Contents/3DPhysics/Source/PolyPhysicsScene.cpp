@@ -33,7 +33,8 @@ THE SOFTWARE.
 
 using namespace Polycode;
 
-PhysicsScene::PhysicsScene() : CollisionScene() {
+PhysicsScene::PhysicsScene(int maxSubSteps) : CollisionScene() {
+	this->maxSubSteps = maxSubSteps;
 	initPhysicsScene();	
 }
 
@@ -77,7 +78,11 @@ void PhysicsScene::Update() {
 	
 	
 	Number elapsed = CoreServices::getInstance()->getCore()->getElapsed();
-	physicsWorld->stepSimulation(elapsed, 7);	
+	if(maxSubSteps > 0) {
+		physicsWorld->stepSimulation(elapsed, maxSubSteps);	
+	} else {
+		physicsWorld->stepSimulation(elapsed);		
+	}
 	CollisionScene::Update();
 	
 }
@@ -154,20 +159,36 @@ PhysicsVehicle *PhysicsScene::addVehicleChild(SceneEntity *newEntity, Number mas
 void PhysicsScene::removePhysicsChild(SceneEntity *entity) {
 	PhysicsSceneEntity *ent = getPhysicsEntityBySceneEntity(entity);
 	if(ent) {
-		physicsWorld->removeRigidBody(ent->rigidBody);
-		physicsWorld->removeCollisionObject(ent->collisionObject);
-		for(int i=0; i < physicsChildren.size(); i++) {
-			if(physicsChildren[i] == ent) {
-				physicsChildren.erase(physicsChildren.begin()+i);
+		if(ent->getType() == PhysicsSceneEntity::CHARACTER_CONTROLLER) {
+			removeCharacterChild((PhysicsCharacter *)ent);
+		} else {
+		
+			if(ent->rigidBody) 
+				physicsWorld->removeRigidBody(ent->rigidBody);
+			physicsWorld->removeCollisionObject(ent->collisionObject);
+			for(int i=0; i < physicsChildren.size(); i++) {
+				if(physicsChildren[i] == ent) {
+					physicsChildren.erase(physicsChildren.begin()+i);
+				}
+			}
+			for(int i=0; i < collisionChildren.size(); i++) {
+				if(collisionChildren[i] == ent) {
+					collisionChildren.erase(collisionChildren.begin()+i);
+				}
 			}
 		}
-		for(int i=0; i < collisionChildren.size(); i++) {
-			if(collisionChildren[i] == ent) {
-				collisionChildren.erase(collisionChildren.begin()+i);
-			}
-		}		
 	}
 	delete ent;
+	CollisionScene::removeEntity(entity);
+}
+
+void PhysicsScene::removeEntity(SceneEntity *entity) {
+	PhysicsSceneEntity *ent = getPhysicsEntityBySceneEntity(entity);
+	if(ent) {
+		removePhysicsChild(entity);
+	} else {
+		CollisionScene::removeEntity(entity);
+	}
 }
 
 PhysicsSceneEntity *PhysicsScene::getPhysicsEntityBySceneEntity(SceneEntity *entity) {

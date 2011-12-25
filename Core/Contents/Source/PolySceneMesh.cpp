@@ -89,6 +89,11 @@ void SceneMesh::setTexture(Texture *texture) {
 void SceneMesh::setMaterial(Material *material) {
 	this->material = material;
 	localShaderOptions = material->getShader(0)->createBinding();
+	if(texture) {
+		localShaderOptions->clearTexture("diffuse");
+		localShaderOptions->addTexture("diffuse", texture);
+	}
+	
 }
 
 void SceneMesh::setMaterialByName(const String& materialName) {
@@ -193,7 +198,8 @@ void SceneMesh::renderMeshLocally() {
 			}
 		}
 		mesh->arrayDirtyMap[RenderDataArray::VERTEX_DATA_ARRAY] = true;		
-		mesh->arrayDirtyMap[RenderDataArray::NORMAL_DATA_ARRAY] = true;		
+		mesh->arrayDirtyMap[RenderDataArray::NORMAL_DATA_ARRAY] = true;	
+		mesh->arrayDirtyMap[RenderDataArray::TANGENT_DATA_ARRAY] = true;				
 	}
 
 	if(mesh->useVertexColors) {
@@ -202,6 +208,7 @@ void SceneMesh::renderMeshLocally() {
 	 
 	renderer->pushDataArrayForMesh(mesh, RenderDataArray::VERTEX_DATA_ARRAY);
 	renderer->pushDataArrayForMesh(mesh, RenderDataArray::NORMAL_DATA_ARRAY);		
+	renderer->pushDataArrayForMesh(mesh, RenderDataArray::TANGENT_DATA_ARRAY);			
 	renderer->pushDataArrayForMesh(mesh, RenderDataArray::TEXCOORD_DATA_ARRAY);	
 	
 	renderer->drawArrays(mesh->getMeshType());

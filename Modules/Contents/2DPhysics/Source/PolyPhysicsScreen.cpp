@@ -68,8 +68,11 @@ void PhysicsScreen::BeginContact (b2Contact *contact) {
 	newEvent->worldCollisionNormal.x = w_nor.x;
 	newEvent->worldCollisionNormal.y = w_nor.y;	
 
-	newEvent->localCollisionPoint.x = point.x;
-	newEvent->localCollisionPoint.y = point.y;	
+	newEvent->localCollisionPoint.x = point.x * worldScale;
+	newEvent->localCollisionPoint.y = point.y * worldScale;	
+	
+	newEvent->worldCollisionPoint.x = w_manifold.points[0].x * worldScale;
+	newEvent->worldCollisionPoint.y = w_manifold.points[0].y * worldScale;
 	
 	newEvent->impactStrength = 0;
 	newEvent->frictionStrength = 0;
@@ -96,8 +99,11 @@ void PhysicsScreen::PostSolve(b2Contact* contact, const b2ContactImpulse* impuls
 	newEvent->worldCollisionNormal.x = w_nor.x;
 	newEvent->worldCollisionNormal.y = w_nor.y;	
 
-	newEvent->localCollisionPoint.x = point.x;
-	newEvent->localCollisionPoint.y = point.y;	
+	newEvent->localCollisionPoint.x = point.x * worldScale;
+	newEvent->localCollisionPoint.y = point.y * worldScale;	
+	newEvent->worldCollisionPoint.x = w_manifold.points[0].x * worldScale;
+	newEvent->worldCollisionPoint.y = w_manifold.points[0].y * worldScale;
+	
 	
 	newEvent->impactStrength = 0;
 	newEvent->frictionStrength = 0;
@@ -407,14 +413,27 @@ PhysicsScreenEntity *PhysicsScreen::addPhysicsChild(ScreenEntity *newEntity, int
 	return newPhysicsEntity;
 }
 
-void PhysicsScreen::removePhysicsChild(PhysicsScreenEntity *entityToRemove) {
-	world->DestroyBody(entityToRemove->body);
-	removeChild(entityToRemove->getScreenEntity());
+void PhysicsScreen::removePhysicsChild(ScreenEntity *entityToRemove) {
+	PhysicsScreenEntity *physicsEntityToRemove = getPhysicsByScreenEntity(entityToRemove);
+	if(!physicsEntityToRemove) {
+		return;
+	}
+	world->DestroyBody(physicsEntityToRemove->body);
 	for(int i=0;i<physicsChildren.size();i++) {
-		if(physicsChildren[i] == entityToRemove) {
+		if(physicsChildren[i] == physicsEntityToRemove) {
 			physicsChildren.erase(physicsChildren.begin()+i);
 		}
 	}
+	Screen::removeChild(entityToRemove);	
+}
+
+ScreenEntity* PhysicsScreen::removeChild(ScreenEntity *entityToRemove) {
+	if(getPhysicsByScreenEntity(entityToRemove)) {
+		removePhysicsChild(entityToRemove);
+	} else {
+		Screen::removeChild(entityToRemove);	
+	}
+	return entityToRemove;
 }
 
 
