@@ -29,6 +29,7 @@ extern "C" {
 #include "PolyFont.h"
 #include "PolyFontManager.h"
 #include "PolyGLCubemap.h"
+#include "PolyGLHeaders.h"
 #include "PolyGlobals.h"
 #include "PolyImage.h"
 #include "PolyInputEvent.h"
@@ -3779,6 +3780,13 @@ static int Polycore_Material_get_diffuseColor(lua_State *L) {
 	return 1;
 }
 
+static int Polycore_Material_get_fp16RenderTargets(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Material *inst = (Material*)lua_topointer(L, 1);
+	lua_pushboolean(L, inst->fp16RenderTargets);
+	return 1;
+}
+
 static int Polycore_Material_set_specularValue(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Material *inst = (Material*)lua_topointer(L, 1);
@@ -3792,6 +3800,14 @@ static int Polycore_Material_set_specularStrength(lua_State *L) {
 	Material *inst = (Material*)lua_topointer(L, 1);
 	Number param = lua_tonumber(L, 2);
 	inst->specularStrength = param;
+	return 0;
+}
+
+static int Polycore_Material_set_fp16RenderTargets(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Material *inst = (Material*)lua_topointer(L, 1);
+	bool param = lua_toboolean(L, 2);
+	inst->fp16RenderTargets = param;
 	return 0;
 }
 
@@ -3952,13 +3968,19 @@ static int Polycore_MaterialManager_createTexture(lua_State *L) {
 	} else {
 		clamp = true;
 	}
+	bool createMipmaps;
+	if(lua_isboolean(L, 6)) {
+		createMipmaps = lua_toboolean(L, 6);
+	} else {
+		createMipmaps = true;
+	}
 	int type;
-	if(lua_isnumber(L, 6)) {
-		type = lua_tointeger(L, 6);
+	if(lua_isnumber(L, 7)) {
+		type = lua_tointeger(L, 7);
 	} else {
 		type = Image :: IMAGE_RGBA;
 	}
-	void *ptrRetVal = (void*)inst->createTexture(width, height, imageData, clamp, type);
+	void *ptrRetVal = (void*)inst->createTexture(width, height, imageData, clamp, createMipmaps, type);
 	if(ptrRetVal == NULL) {
 		lua_pushnil(L);
 	} else {
@@ -3980,13 +4002,19 @@ static int Polycore_MaterialManager_createNewTexture(lua_State *L) {
 	} else {
 		clamp = true;
 	}
+	bool createMipmaps;
+	if(lua_isboolean(L, 5)) {
+		createMipmaps = lua_toboolean(L, 5);
+	} else {
+		createMipmaps = true;
+	}
 	int type;
-	if(lua_isnumber(L, 5)) {
-		type = lua_tointeger(L, 5);
+	if(lua_isnumber(L, 6)) {
+		type = lua_tointeger(L, 6);
 	} else {
 		type = Image :: IMAGE_RGBA;
 	}
-	void *ptrRetVal = (void*)inst->createNewTexture(width, height, clamp, type);
+	void *ptrRetVal = (void*)inst->createNewTexture(width, height, clamp, createMipmaps, type);
 	if(ptrRetVal == NULL) {
 		lua_pushnil(L);
 	} else {
@@ -4006,7 +4034,13 @@ static int Polycore_MaterialManager_createTextureFromImage(lua_State *L) {
 	} else {
 		clamp = true;
 	}
-	void *ptrRetVal = (void*)inst->createTextureFromImage(image, clamp);
+	bool createMipmaps;
+	if(lua_isboolean(L, 4)) {
+		createMipmaps = lua_toboolean(L, 4);
+	} else {
+		createMipmaps = true;
+	}
+	void *ptrRetVal = (void*)inst->createTextureFromImage(image, clamp, createMipmaps);
 	if(ptrRetVal == NULL) {
 		lua_pushnil(L);
 	} else {
@@ -4026,7 +4060,13 @@ static int Polycore_MaterialManager_createTextureFromFile(lua_State *L) {
 	} else {
 		clamp = true;
 	}
-	void *ptrRetVal = (void*)inst->createTextureFromFile(fileName, clamp);
+	bool createMipmaps;
+	if(lua_isboolean(L, 4)) {
+		createMipmaps = lua_toboolean(L, 4);
+	} else {
+		createMipmaps = true;
+	}
+	void *ptrRetVal = (void*)inst->createTextureFromFile(fileName, clamp, createMipmaps);
 	if(ptrRetVal == NULL) {
 		lua_pushnil(L);
 	} else {
@@ -6129,13 +6169,15 @@ static int Polycore_Renderer_createTexture(lua_State *L) {
 	char* textureData = (char*)lua_topointer(L, 4);
 	luaL_checktype(L, 5, LUA_TBOOLEAN);
 	bool clamp = lua_toboolean(L, 5);
+	luaL_checktype(L, 6, LUA_TBOOLEAN);
+	bool createMipmaps = lua_toboolean(L, 6);
 	int type;
-	if(lua_isnumber(L, 6)) {
-		type = lua_tointeger(L, 6);
+	if(lua_isnumber(L, 7)) {
+		type = lua_tointeger(L, 7);
 	} else {
 		type = Image :: IMAGE_RGBA;
 	}
-	void *ptrRetVal = (void*)inst->createTexture(width, height, textureData, clamp, type);
+	void *ptrRetVal = (void*)inst->createTexture(width, height, textureData, clamp, createMipmaps, type);
 	if(ptrRetVal == NULL) {
 		lua_pushnil(L);
 	} else {
@@ -6164,7 +6206,9 @@ static int Polycore_Renderer_createRenderTextures(lua_State *L) {
 	int width = lua_tointeger(L, 4);
 	luaL_checktype(L, 5, LUA_TNUMBER);
 	int height = lua_tointeger(L, 5);
-	inst->createRenderTextures(colorBuffer, depthBuffer, width, height);
+	luaL_checktype(L, 6, LUA_TBOOLEAN);
+	bool floatingPointBuffer = lua_toboolean(L, 6);
+	inst->createRenderTextures(colorBuffer, depthBuffer, width, height, floatingPointBuffer);
 	return 0;
 }
 
@@ -8796,8 +8840,8 @@ static int Polycore_ScreenEntity_setRotation(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	ScreenEntity *inst = (ScreenEntity*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TNUMBER);
-	Number roatation = lua_tonumber(L, 2);
-	inst->setRotation(roatation);
+	Number rotation = lua_tonumber(L, 2);
+	inst->setRotation(rotation);
 	return 0;
 }
 
@@ -10875,6 +10919,15 @@ static int Polycore_Timer_getElapsedf(lua_State *L) {
 	return 1;
 }
 
+static int Polycore_Timer_setTimerInterval(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Timer *inst = (Timer*)lua_topointer(L, 1);
+	luaL_checktype(L, 2, LUA_TNUMBER);
+	int msecs = lua_tointeger(L, 2);
+	inst->setTimerInterval(msecs);
+	return 0;
+}
+
 static int Polycore_delete_Timer(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Timer *inst = (Timer*)lua_topointer(L, 1);
@@ -11129,10 +11182,96 @@ static int Polycore_delete_TweenManager(lua_State *L) {
 	return 0;
 }
 
+static int Polycore_Vector2_get_x(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Vector2 *inst = (Vector2*)lua_topointer(L, 1);
+	lua_pushnumber(L, inst->x);
+	return 1;
+}
+
+static int Polycore_Vector2_get_y(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Vector2 *inst = (Vector2*)lua_topointer(L, 1);
+	lua_pushnumber(L, inst->y);
+	return 1;
+}
+
+static int Polycore_Vector2_set_x(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Vector2 *inst = (Vector2*)lua_topointer(L, 1);
+	Number param = lua_tonumber(L, 2);
+	inst->x = param;
+	return 0;
+}
+
+static int Polycore_Vector2_set_y(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Vector2 *inst = (Vector2*)lua_topointer(L, 1);
+	Number param = lua_tonumber(L, 2);
+	inst->y = param;
+	return 0;
+}
+
 static int Polycore_Vector2(lua_State *L) {
-	Vector2 *inst = new Vector2();
+	luaL_checktype(L, 1, LUA_TNUMBER);
+	Number x = lua_tonumber(L, 1);
+	luaL_checktype(L, 2, LUA_TNUMBER);
+	Number y = lua_tonumber(L, 2);
+	Vector2 *inst = new Vector2(x, y);
 	lua_pushlightuserdata(L, (void*)inst);
 	return 1;
+}
+
+static int Polycore_Vector2_set(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Vector2 *inst = (Vector2*)lua_topointer(L, 1);
+	luaL_checktype(L, 2, LUA_TNUMBER);
+	Number x = lua_tonumber(L, 2);
+	luaL_checktype(L, 3, LUA_TNUMBER);
+	Number y = lua_tonumber(L, 3);
+	inst->set(x, y);
+	return 0;
+}
+
+static int Polycore_Vector2_distance(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Vector2 *inst = (Vector2*)lua_topointer(L, 1);
+	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
+	Vector2 vec2 = *(Vector2*)lua_topointer(L, 2);
+	lua_pushnumber(L, inst->distance(vec2));
+	return 1;
+}
+
+static int Polycore_Vector2_length(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Vector2 *inst = (Vector2*)lua_topointer(L, 1);
+	lua_pushnumber(L, inst->length());
+	return 1;
+}
+
+static int Polycore_Vector2_dot(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Vector2 *inst = (Vector2*)lua_topointer(L, 1);
+	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
+	Vector2 u = *(Vector2*)lua_topointer(L, 2);
+	lua_pushnumber(L, inst->dot(u));
+	return 1;
+}
+
+static int Polycore_Vector2_crossProduct(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Vector2 *inst = (Vector2*)lua_topointer(L, 1);
+	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
+	Vector2 vec2 = *(Vector2*)lua_topointer(L, 2);
+	lua_pushnumber(L, inst->crossProduct(vec2));
+	return 1;
+}
+
+static int Polycore_Vector2_Normalize(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Vector2 *inst = (Vector2*)lua_topointer(L, 1);
+	inst->Normalize();
+	return 0;
 }
 
 static int Polycore_delete_Vector2(lua_State *L) {

@@ -36,6 +36,15 @@ static int Physics3D_CollisionScene_Update(lua_State *L) {
 	return 0;
 }
 
+static int Physics3D_CollisionScene_removeEntity(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	CollisionScene *inst = (CollisionScene*)lua_topointer(L, 1);
+	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
+	SceneEntity* entity = (SceneEntity*)lua_topointer(L, 2);
+	inst->removeEntity(entity);
+	return 0;
+}
+
 static int Physics3D_CollisionScene_getCollisionEntityByObject(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	CollisionScene *inst = (CollisionScene*)lua_topointer(L, 1);
@@ -125,15 +134,6 @@ static int Physics3D_CollisionScene_testCollisionOnCollisionChild_Convex(lua_Sta
 	*retInst = inst->testCollisionOnCollisionChild_Convex(cEnt1, cEnt2);
 	lua_pushlightuserdata(L, retInst);
 	return 1;
-}
-
-static int Physics3D_CollisionScene_stopTrackingCollision(lua_State *L) {
-	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
-	CollisionScene *inst = (CollisionScene*)lua_topointer(L, 1);
-	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
-	SceneEntity* entity = (SceneEntity*)lua_topointer(L, 2);
-	inst->stopTrackingCollision(entity);
-	return 0;
 }
 
 static int Physics3D_CollisionScene_addCollisionChild(lua_State *L) {
@@ -307,7 +307,13 @@ static int Physics3D_delete_CollisionSceneEntity(lua_State *L) {
 }
 
 static int Physics3D_PhysicsScene(lua_State *L) {
-	PhysicsScene *inst = new PhysicsScene();
+	int maxSubSteps;
+	if(lua_isnumber(L, 1)) {
+		maxSubSteps = lua_tointeger(L, 1);
+	} else {
+		maxSubSteps = 0;
+	}
+	PhysicsScene *inst = new PhysicsScene(maxSubSteps);
 	lua_pushlightuserdata(L, (void*)inst);
 	return 1;
 }
@@ -316,6 +322,15 @@ static int Physics3D_PhysicsScene_Update(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	PhysicsScene *inst = (PhysicsScene*)lua_topointer(L, 1);
 	inst->Update();
+	return 0;
+}
+
+static int Physics3D_PhysicsScene_removeEntity(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	PhysicsScene *inst = (PhysicsScene*)lua_topointer(L, 1);
+	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
+	SceneEntity* entity = (SceneEntity*)lua_topointer(L, 2);
+	inst->removeEntity(entity);
 	return 0;
 }
 

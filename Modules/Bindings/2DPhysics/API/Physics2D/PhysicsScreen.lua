@@ -48,6 +48,18 @@ function PhysicsScreen:removePhysicsChild(entityToRemove)
 	local retVal = Physics2D.PhysicsScreen_removePhysicsChild(self.__ptr, entityToRemove.__ptr)
 end
 
+function PhysicsScreen:removeChild(entityToRemove)
+	local retVal = Physics2D.PhysicsScreen_removeChild(self.__ptr, entityToRemove.__ptr)
+	if retVal == nil then return nil end
+	if Polycore.__ptr_lookup[retVal] ~= nil then
+		return Polycore.__ptr_lookup[retVal]
+	else
+		Polycore.__ptr_lookup[retVal] = ScreenEntity("__skip_ptr__")
+		Polycore.__ptr_lookup[retVal].__ptr = retVal
+		return Polycore.__ptr_lookup[retVal]
+	end
+end
+
 function PhysicsScreen:addCollisionChild(newEntity, entType)
 	local retVal = Physics2D.PhysicsScreen_addCollisionChild(self.__ptr, newEntity.__ptr, entType)
 	if retVal == nil then return nil end

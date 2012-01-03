@@ -83,9 +83,23 @@ static int Physics2D_PhysicsScreen_removePhysicsChild(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	PhysicsScreen *inst = (PhysicsScreen*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
-	PhysicsScreenEntity* entityToRemove = (PhysicsScreenEntity*)lua_topointer(L, 2);
+	ScreenEntity* entityToRemove = (ScreenEntity*)lua_topointer(L, 2);
 	inst->removePhysicsChild(entityToRemove);
 	return 0;
+}
+
+static int Physics2D_PhysicsScreen_removeChild(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	PhysicsScreen *inst = (PhysicsScreen*)lua_topointer(L, 1);
+	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
+	ScreenEntity* entityToRemove = (ScreenEntity*)lua_topointer(L, 2);
+	void *ptrRetVal = (void*)inst->removeChild(entityToRemove);
+	if(ptrRetVal == NULL) {
+		lua_pushnil(L);
+	} else {
+		lua_pushlightuserdata(L, ptrRetVal);
+	}
+	return 1;
 }
 
 static int Physics2D_PhysicsScreen_addCollisionChild(lua_State *L) {
@@ -512,6 +526,13 @@ static int Physics2D_PhysicsScreenEvent_get_localCollisionPoint(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	PhysicsScreenEvent *inst = (PhysicsScreenEvent*)lua_topointer(L, 1);
 	lua_pushlightuserdata(L, &inst->localCollisionPoint);
+	return 1;
+}
+
+static int Physics2D_PhysicsScreenEvent_get_worldCollisionPoint(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	PhysicsScreenEvent *inst = (PhysicsScreenEvent*)lua_topointer(L, 1);
+	lua_pushlightuserdata(L, &inst->worldCollisionPoint);
 	return 1;
 }
 

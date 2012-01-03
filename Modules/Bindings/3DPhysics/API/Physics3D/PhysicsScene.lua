@@ -32,6 +32,10 @@ function PhysicsScene:Update()
 	local retVal =  Physics3D.PhysicsScene_Update(self.__ptr)
 end
 
+function PhysicsScene:removeEntity(entity)
+	local retVal = Physics3D.PhysicsScene_removeEntity(self.__ptr, entity.__ptr)
+end
+
 function PhysicsScene:removePhysicsChild(entity)
 	local retVal = Physics3D.PhysicsScene_removePhysicsChild(self.__ptr, entity.__ptr)
 end

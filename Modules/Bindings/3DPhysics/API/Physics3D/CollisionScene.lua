@@ -36,6 +36,10 @@ function CollisionScene:Update()
 	local retVal =  Physics3D.CollisionScene_Update(self.__ptr)
 end
 
+function CollisionScene:removeEntity(entity)
+	local retVal = Physics3D.CollisionScene_removeEntity(self.__ptr, entity.__ptr)
+end
+
 function CollisionScene:getCollisionEntityByObject(collisionObject)
 	local retVal = Physics3D.CollisionScene_getCollisionEntityByObject(self.__ptr, collisionObject.__ptr)
 	if retVal == nil then return nil end
@@ -110,10 +114,6 @@ function CollisionScene:testCollisionOnCollisionChild_Convex(cEnt1, cEnt2)
 		Polycore.__ptr_lookup[retVal].__ptr = retVal
 		return Polycore.__ptr_lookup[retVal]
 	end
-end
-
-function CollisionScene:stopTrackingCollision(entity)
-	local retVal = Physics3D.CollisionScene_stopTrackingCollision(self.__ptr, entity.__ptr)
 end
 
 function CollisionScene:addCollisionChild(newEntity, type, group)

@@ -65,8 +65,8 @@ function ScreenEntity:setScale(x, y)
 	local retVal = Polycore.ScreenEntity_setScale(self.__ptr, x, y)
 end
 
-function ScreenEntity:setRotation(roatation)
-	local retVal = Polycore.ScreenEntity_setRotation(self.__ptr, roatation)
+function ScreenEntity:setRotation(rotation)
+	local retVal = Polycore.ScreenEntity_setRotation(self.__ptr, rotation)
 end
 
 function ScreenEntity:getRotation()

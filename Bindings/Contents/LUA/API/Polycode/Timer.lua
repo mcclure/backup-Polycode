@@ -61,6 +61,10 @@ function Timer:getElapsedf()
 	return retVal
 end
 
+function Timer:setTimerInterval(msecs)
+	local retVal = Polycore.Timer_setTimerInterval(self.__ptr, msecs)
+end
+
 
 
 function Timer:__delete()

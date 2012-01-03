@@ -35,6 +35,15 @@ function PhysicsScreenEvent:__index__(name)
 			Polycore.__ptr_lookup[retVal].__ptr = retVal
 			return Polycore.__ptr_lookup[retVal]
 		end
+	elseif name == "worldCollisionPoint" then
+		retVal = Physics2D.PhysicsScreenEvent_get_worldCollisionPoint(self.__ptr)
+		if Polycore.__ptr_lookup[retVal] ~= nil then
+			return Polycore.__ptr_lookup[retVal]
+		else
+			Polycore.__ptr_lookup[retVal] = Vector2("__skip_ptr__")
+			Polycore.__ptr_lookup[retVal].__ptr = retVal
+			return Polycore.__ptr_lookup[retVal]
+		end
 	elseif name == "impactStrength" then
 		return Physics2D.PhysicsScreenEvent_get_impactStrength(self.__ptr)
 	elseif name == "frictionStrength" then

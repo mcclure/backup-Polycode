@@ -81,8 +81,8 @@ function Renderer:createCubemap(t0, t1, t2, t3, t4, t5)
 	end
 end
 
-function Renderer:createTexture(width, height, textureData, clamp, type)
-	local retVal = Polycore.Renderer_createTexture(self.__ptr, width, height, textureData.__ptr, clamp, type)
+function Renderer:createTexture(width, height, textureData, clamp, createMipmaps, type)
+	local retVal = Polycore.Renderer_createTexture(self.__ptr, width, height, textureData.__ptr, clamp, createMipmaps, type)
 	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
@@ -97,8 +97,8 @@ function Renderer:destroyTexture(texture)
 	local retVal = Polycore.Renderer_destroyTexture(self.__ptr, texture.__ptr)
 end
 
-function Renderer:createRenderTextures(colorBuffer, depthBuffer, width, height)
-	local retVal = Polycore.Renderer_createRenderTextures(self.__ptr, colorBuffer.__ptr, depthBuffer.__ptr, width, height)
+function Renderer:createRenderTextures(colorBuffer, depthBuffer, width, height, floatingPointBuffer)
+	local retVal = Polycore.Renderer_createRenderTextures(self.__ptr, colorBuffer.__ptr, depthBuffer.__ptr, width, height, floatingPointBuffer)
 end
 
 function Renderer:createFramebufferTexture(width, height)

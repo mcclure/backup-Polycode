@@ -36,8 +36,8 @@ function MaterialManager:createFramebufferTexture(width, height, type)
 	end
 end
 
-function MaterialManager:createTexture(width, height, imageData, clamp, type)
-	local retVal = Polycore.MaterialManager_createTexture(self.__ptr, width, height, imageData.__ptr, clamp, type)
+function MaterialManager:createTexture(width, height, imageData, clamp, createMipmaps, type)
+	local retVal = Polycore.MaterialManager_createTexture(self.__ptr, width, height, imageData.__ptr, clamp, createMipmaps, type)
 	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
@@ -48,8 +48,8 @@ function MaterialManager:createTexture(width, height, imageData, clamp, type)
 	end
 end
 
-function MaterialManager:createNewTexture(width, height, clamp, type)
-	local retVal = Polycore.MaterialManager_createNewTexture(self.__ptr, width, height, clamp, type)
+function MaterialManager:createNewTexture(width, height, clamp, createMipmaps, type)
+	local retVal = Polycore.MaterialManager_createNewTexture(self.__ptr, width, height, clamp, createMipmaps, type)
 	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
@@ -60,8 +60,8 @@ function MaterialManager:createNewTexture(width, height, clamp, type)
 	end
 end
 
-function MaterialManager:createTextureFromImage(image, clamp)
-	local retVal = Polycore.MaterialManager_createTextureFromImage(self.__ptr, image.__ptr, clamp)
+function MaterialManager:createTextureFromImage(image, clamp, createMipmaps)
+	local retVal = Polycore.MaterialManager_createTextureFromImage(self.__ptr, image.__ptr, clamp, createMipmaps)
 	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]
@@ -72,8 +72,8 @@ function MaterialManager:createTextureFromImage(image, clamp)
 	end
 end
 
-function MaterialManager:createTextureFromFile(fileName, clamp)
-	local retVal = Polycore.MaterialManager_createTextureFromFile(self.__ptr, fileName, clamp)
+function MaterialManager:createTextureFromFile(fileName, clamp, createMipmaps)
+	local retVal = Polycore.MaterialManager_createTextureFromFile(self.__ptr, fileName, clamp, createMipmaps)
 	if retVal == nil then return nil end
 	if Polycore.__ptr_lookup[retVal] ~= nil then
 		return Polycore.__ptr_lookup[retVal]

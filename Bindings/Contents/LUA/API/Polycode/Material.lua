@@ -27,6 +27,8 @@ function Material:__index__(name)
 			Polycore.__ptr_lookup[retVal].__ptr = retVal
 			return Polycore.__ptr_lookup[retVal]
 		end
+	elseif name == "fp16RenderTargets" then
+		return Polycore.Material_get_fp16RenderTargets(self.__ptr)
 	end
 end
 
@@ -37,6 +39,9 @@ function Material:__set_callback(name,value)
 		return true
 	elseif name == "specularStrength" then
 		Polycore.Material_set_specularStrength(self.__ptr, value)
+		return true
+	elseif name == "fp16RenderTargets" then
+		Polycore.Material_set_fp16RenderTargets(self.__ptr, value)
 		return true
 	end
 	return false
