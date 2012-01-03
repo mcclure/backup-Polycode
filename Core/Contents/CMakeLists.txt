@@ -192,17 +192,17 @@ SET(CMAKE_DEBUG_POSTFIX "_d")
 #   Source/PolyGLES1Texture.cpp
 
 # platform specific
-IF(MSVC)
+IF(MSVC OR MINGW)
     SET(polycore_SRCS ${polycore_SRCS} PolycodeView/MSVC/PolycodeView.cpp Source/PolyWinCore.cpp)
     SET(polycore_HDRS ${polycore_HDRS} PolycodeView/MSVC/PolycodeView.h Include/PolyWinCore.h)
 ELSEIF(APPLE)
     SET(polycore_SRCS ${polycore_SRCS} "PolycodeView/Mac OS X/PolycodeView.mm" Source/PolyCocoaCore.mm)
     SET(polycore_HDRS ${polycore_HDRS} "PolycodeView/Mac OS X/PolycodeView.h" Include/PolyCocoaCore.h)
 #    SET(EXTRA_LIBS "-framework Cocoa")
-ELSE(MSVC)
+ELSE(MSVC OR MINGW)
     SET(polycore_SRCS ${polycore_SRCS} PolycodeView/Linux/PolycodeView.cpp Source/PolySDLCore.cpp)
     SET(polycore_HDRS ${polycore_HDRS} PolycodeView/Linux/PolycodeView.h Include/PolySDLCore.h)
-ENDIF(MSVC)
+ENDIF(MSVC OR MINGW)
 
 #IF(POLYCODE_BUILD_SHARED)
 #    ADD_LIBRARY(Polycore_dynamic SHARED ${polycore_SRCS} ${polycore_HDRS})
