@@ -1,5 +1,12 @@
+# If the following short ugly mess is not present, failures can occur with -G "Unix Makefiles".
+# FIXME: cmake should be finding ALL of the following things by way of CMAKE_PREFIX_PATH
+SET(OGG_LIBRARY ${POLYCODE_RELEASE_DIR}/Framework/Core/Dependencies/lib)
+SET(OGG_INCLUDE_DIR ${POLYCODE_RELEASE_DIR}/Framework/Core/Dependencies/include)
+SET(PNG_LIBRARY ${POLYCODE_RELEASE_DIR}/Framework/Core/Dependencies/lib)
+SET(PNG_PNG_INCLUDE_DIR ${POLYCODE_RELEASE_DIR}/Framework/Core/Dependencies/include)
+
 # platform specific defines and include directories for win and sdl
-IF(MSVC)
+IF(MSVC OR MINGW)
     ADD_DEFINITIONS(/D_UNICODE /DUNICODE)
     INCLUDE_DIRECTORIES("${Polycode_SOURCE_DIR}/Core/Contents/PolycodeView/MSVC/Polycore")
 ELSEIF(APPLE)
@@ -8,7 +15,7 @@ ELSEIF(APPLE)
 ELSE(MSVC)
     ADD_DEFINITIONS(-DGL_GLEXT_PROTOTYPES)
     INCLUDE_DIRECTORIES("${Polycode_SOURCE_DIR}/Core/Contents/PolycodeView/Linux")
-ENDIF(MSVC)
+ENDIF(MSVC OR MINGW)
 
 FIND_PACKAGE(OpenGL REQUIRED)
 FIND_PACKAGE(ZLIB REQUIRED)

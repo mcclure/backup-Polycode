@@ -22,7 +22,9 @@ SET(lualib_SRCS
 
 INCLUDE_DIRECTORIES(src)
 
+IF(NOT MINGW)
 ADD_DEFINITIONS(-DLUA_USE_POSIX -DLUA_USE_DLOPEN)
+ENDIF()
 
 # We only want a static lib
 ADD_LIBRARY(lualib ${lualib_SRCS})

@@ -40,7 +40,6 @@ ENDIF(NOT POLYCODE_RELEASE_DIR)
 
 SET(CMAKE_INSTALL_PREFIX ${POLYCODE_RELEASE_DIR}/Framework/)
 
-
 # set default externals install location
 SET(CMAKE_PREFIX_PATH 
     ${POLYCODE_RELEASE_DIR}/Framework/Core/Dependencies
@@ -48,6 +47,37 @@ SET(CMAKE_PREFIX_PATH
     ${POLYCODE_RELEASE_DIR}/Framework/Tools/Dependencies)
 
 MESSAGE(DEBUG "CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}")
+
+# If the following large ugly mess is not present, failures can occur with -G "Unix Makefiles".
+# FIXME: cmake should be finding ALL of the following things by way of CMAKE_PREFIX_PATH
+SET(ZLIB_LIBRARY ${POLYCODE_RELEASE_DIR}/Framework/Core/Dependencies/lib)
+SET(ZLIB_INCLUDE_DIR ${POLYCODE_RELEASE_DIR}/Framework/Core/Dependencies/include)
+SET(OGG_LIBRARY ${POLYCODE_RELEASE_DIR}/Framework/Core/Dependencies/lib)
+SET(OGG_INCLUDE_DIR ${POLYCODE_RELEASE_DIR}/Framework/Core/Dependencies/include)
+SET(PNG_LIBRARY ${POLYCODE_RELEASE_DIR}/Framework/Core/Dependencies/lib)
+SET(PNG_PNG_INCLUDE_DIR ${POLYCODE_RELEASE_DIR}/Framework/Core/Dependencies/include)
+SET(PHYSFS_LIBRARY ${POLYCODE_RELEASE_DIR}/Framework/Core/Dependencies/lib)
+SET(PHYSFS_INCLUDE_DIR ${POLYCODE_RELEASE_DIR}/Framework/Core/Dependencies/include)
+SET(OPENAL_LIBRARY ${POLYCODE_RELEASE_DIR}/Framework/Core/Dependencies/lib)
+SET(OPENAL_INCLUDE_DIR ${POLYCODE_RELEASE_DIR}/Framework/Core/Dependencies/include/AL)
+SET(FREETYPE_LIBRARY ${POLYCODE_RELEASE_DIR}/Framework/Core/Dependencies/lib)
+SET(FREETYPE_INCLUDE_DIRS ${POLYCODE_RELEASE_DIR}/Framework/Core/Dependencies/include)
+SET(VORBIS_LIBRARY ${POLYCODE_RELEASE_DIR}/Framework/Core/Dependencies/lib)
+SET(VORBIS_INCLUDE_DIR ${POLYCODE_RELEASE_DIR}/Framework/Core/Dependencies/include)
+SET(VORBISFILE_LIBRARY ${POLYCODE_RELEASE_DIR}/Framework/Core/Dependencies/lib)
+SET(VORBISFILE_INCLUDE_DIR ${POLYCODE_RELEASE_DIR}/Framework/Core/Dependencies/include)
+SET(LUA_LIBRARY ${POLYCODE_RELEASE_DIR}/Framework/Core/Dependencies/lib)
+SET(LUA_LIBRARIES ${POLYCODE_RELEASE_DIR}/Framework/Core/Dependencies/lib)
+SET(LUA_INCLUDE_DIR ${POLYCODE_RELEASE_DIR}/Framework/Core/Dependencies/include)
+SET(BOX2D_RELEASE_LIBRARY ${POLYCODE_RELEASE_DIR}/Framework/Core/Dependencies/lib)
+SET(BOX2D_INCLUDE_DIR ${POLYCODE_RELEASE_DIR}/Framework/Core/Dependencies/include)
+SET(ASSIMP_INCLUDE_DIR ${POLYCODE_RELEASE_DIR}/Framework/Core/Dependencies/include)
+SET(BULLET_INCLUDE_DIR ${POLYCODE_RELEASE_DIR}/Framework/Core/Dependencies/include)
+SET(LIBBULLETCOLLISION ${POLYCODE_RELEASE_DIR}/Framework/Core/Dependencies/lib)
+SET(LIBBULLETDYNAMICS ${POLYCODE_RELEASE_DIR}/Framework/Core/Dependencies/lib)
+SET(LIBBULLETMATH ${POLYCODE_RELEASE_DIR}/Framework/Core/Dependencies/lib)
+SET(LIBBULLETMULTITHREADED ${POLYCODE_RELEASE_DIR}/Framework/Core/Dependencies/lib)
+SET(LIBBULLETSOFTBODY ${POLYCODE_RELEASE_DIR}/Framework/Core/Dependencies/lib)
 
 # Process subdirectories
 ADD_SUBDIRECTORY(Core/Contents)
