@@ -350,8 +350,8 @@ function Renderer:setTextureFilteringMode(mode)
 	local retVal = Polycore.Renderer_setTextureFilteringMode(self.__ptr, mode)
 end
 
-function Renderer:setClippingPlanes(near, far)
-	local retVal = Polycore.Renderer_setClippingPlanes(self.__ptr, near, far)
+function Renderer:setClippingPlanes(nearPlane_, farPlane_)
+	local retVal = Polycore.Renderer_setClippingPlanes(self.__ptr, nearPlane_, farPlane_)
 end
 
 function Renderer:enableAlphaTest(val)

@@ -29,7 +29,6 @@ extern "C" {
 #include "PolyFont.h"
 #include "PolyFontManager.h"
 #include "PolyGLCubemap.h"
-#include "PolyGLHeaders.h"
 #include "PolyGlobals.h"
 #include "PolyImage.h"
 #include "PolyInputEvent.h"
@@ -6747,10 +6746,10 @@ static int Polycore_Renderer_setClippingPlanes(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Renderer *inst = (Renderer*)lua_topointer(L, 1);
 	luaL_checktype(L, 2, LUA_TNUMBER);
-	Number near = lua_tonumber(L, 2);
+	Number nearPlane_ = lua_tonumber(L, 2);
 	luaL_checktype(L, 3, LUA_TNUMBER);
-	Number far = lua_tonumber(L, 3);
-	inst->setClippingPlanes(near, far);
+	Number farPlane_ = lua_tonumber(L, 3);
+	inst->setClippingPlanes(nearPlane_, farPlane_);
 	return 0;
 }
 
