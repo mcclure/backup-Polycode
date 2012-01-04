@@ -1,10 +1,3 @@
-# If the following short ugly mess is not present, failures can occur with -G "Unix Makefiles".
-# FIXME: cmake should be finding ALL of the following things by way of CMAKE_PREFIX_PATH
-if (MINGW)
-SET(PNG_LIBRARY ${POLYCODE_RELEASE_DIR}/Framework/Core/Dependencies/lib)
-SET(PNG_PNG_INCLUDE_DIR ${POLYCODE_RELEASE_DIR}/Framework/Core/Dependencies/include)
-ENDIF()
-
 INCLUDE(FindPythonModule)
 
 FIND_PACKAGE(PythonInterp REQUIRED)
