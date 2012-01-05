@@ -35,5 +35,5 @@ EXTERNALPROJECT_ADD(libvorbis
     PATCH_COMMAND ${CMAKE_COMMAND} -E copy_if_different ${PolycodeDependencies_SOURCE_DIR}/../CMake/libvorbis.cmake <SOURCE_DIR>/CMakeLists.txt
 
     INSTALL_DIR ${POLYCODE_DEPS_CORE_PREFIX}
-    CMAKE_ARGS ${oggvorbis_CMAKE_ARGS} -DCMAKE_PREFIX_PATH=${install_dir} -DOGG_LIBRARY=${install_dir}/lib -DOGG_INCLUDE_DIR=${install_dir}/include # to find libogg
+    CMAKE_ARGS ${oggvorbis_CMAKE_ARGS} -DCMAKE_PREFIX_PATH=${install_dir} -DOGG_LIBRARY=libogg -DOGG_INCLUDE_DIR=${install_dir}/include # to find libogg
 )

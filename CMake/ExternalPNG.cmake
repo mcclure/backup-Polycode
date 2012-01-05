@@ -36,5 +36,5 @@ EXTERNALPROJECT_ADD(libpng
     URL_MD5 944b56a84b65d94054cc73d7ff965de8
 
     INSTALL_DIR ${POLYCODE_DEPS_CORE_PREFIX}
-    CMAKE_ARGS ${libpng_CMAKE_ARGS} -DCMAKE_PREFIX_PATH=${install_dir} -DZLIB_LIBRARY=${install_dir}/lib -DZLIB_INCLUDE_DIR=${install_dir}/include # to find zlib
+    CMAKE_ARGS ${libpng_CMAKE_ARGS} -DCMAKE_PREFIX_PATH=${install_dir} -DZLIB_LIBRARY=zlib -DZLIB_INCLUDE_DIR=${install_dir}/include # to find zlib
 )
