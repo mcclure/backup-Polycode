@@ -76,7 +76,7 @@ Win32Core::Win32Core(PolycodeViewBase *view, int _xRes, int _yRes, bool fullScre
 	renderer = new OpenGLRenderer();
 	services->setRenderer(renderer);
 
-	setVideoMode(xRes, yRes, fullScreen, aaLevel);
+	setVideoMode(xRes, yRes, fullScreen, vSync, aaLevel, anisotropyLevel);
 		
 //	WSADATA WsaData;
 ///	if(WSAStartup( MAKEWORD(2,2), &WsaData ) != NO_ERROR ){
@@ -115,7 +115,7 @@ bool Win32Core::Update() {
 	return running;
 }
 
-void Win32Core::setVideoMode(int xRes, int yRes, bool fullScreen, int aaLevel) {
+void Win32Core::setVideoMode(int xRes, int yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel) {
 
 	if(fullScreen) {
 

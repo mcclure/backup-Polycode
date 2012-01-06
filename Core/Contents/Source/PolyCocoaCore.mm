@@ -32,12 +32,17 @@ long getThreadID() {
 
 CocoaCore::CocoaCore(PolycodeView *view, int _xRes, int _yRes, bool fullScreen, bool vSync, int aaLevel, int anisotropyLevel, int frameRate) : Core(_xRes, _yRes, fullScreen, vSync, aaLevel, anisotropyLevel, frameRate) {	
 
+	hidManager = NULL;
 	initGamepad();
 
 	eventMutex = createMutex();
 	
 //	NSLog(@"BUNDLE: %@", [[NSBundle mainBundle] bundlePath]);
 	chdir([[[[NSBundle mainBundle] bundlePath] stringByAppendingString:@"/Contents/Resources"] UTF8String]);
+	
+	defaultWorkingDirectory = String([[[[NSBundle mainBundle] bundlePath] stringByAppendingString:@"/Contents/Resources"] UTF8String]);
+	
+	userHomeDirectory = String([NSHomeDirectory() UTF8String]);
 	
 	NSOpenGLPixelFormatAttribute attrs[32];
 	

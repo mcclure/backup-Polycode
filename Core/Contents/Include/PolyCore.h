@@ -272,7 +272,20 @@ namespace Polycode {
 		
 		static const int EVENT_CORE_RESIZE = 0;		
 		
+		/**
+		* Returns the default working path of the application.
+		*/
+		String getDefaultWorkingDirectory();
+		
+		/**
+		* Returns the default working path of the application.
+		*/
+		String getUserHomeDirectory();		
+		
 	protected:
+		
+		String userHomeDirectory;
+		String defaultWorkingDirectory;
 		
 		void *userPointer;
 		
