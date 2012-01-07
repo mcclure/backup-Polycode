@@ -88,6 +88,12 @@ SET(polycore_SRCS
     Source/tinyxmlparser.cpp
 )
 
+IF (MINGW)
+	SET(polycore_SRCS ${polycore_SRCS}
+		Source/GLee.cpp
+	)
+ENDIF(MINGW)
+
 SET(polycore_HDRS
     Include/OSBasics.h
     Include/PolyBasics.h

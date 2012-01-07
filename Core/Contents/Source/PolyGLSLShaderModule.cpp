@@ -42,7 +42,7 @@ using std::vector;
 
 using namespace Polycode;
 
-#ifdef _WINDOWS
+#if defined(_WINDOWS) && !defined(_MINGW)
 PFNGLUSEPROGRAMPROC glUseProgram;
 PFNGLUNIFORM1IPROC glUniform1i;
 PFNGLUNIFORM1FPROC glUniform1f;
