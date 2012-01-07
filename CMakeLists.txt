@@ -46,7 +46,7 @@ SET(CMAKE_PREFIX_PATH
     ${POLYCODE_RELEASE_DIR}/Framework/Modules/Dependencies
     ${POLYCODE_RELEASE_DIR}/Framework/Tools/Dependencies)
 
-MESSAGE(DEBUG "CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}")
+MESSAGE(DEBUG " CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}")
 
 # If the following large ugly mess is not present, failures can occur with -G "Unix Makefiles".
 # FIXME: cmake should be finding ALL of the following things by way of CMAKE_PREFIX_PATH

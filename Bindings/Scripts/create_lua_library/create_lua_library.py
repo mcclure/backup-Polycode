@@ -62,7 +62,7 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 			f = open(headerFile)
 			contents = f.read().replace("_PolyExport", "")
 			cppHeader = CppHeaderParser.CppHeader(contents, "string")
-			ignore_classes = ["PolycodeShaderModule", "Object", "Threaded", "OpenGLCubemap"]
+			ignore_classes = ["PolycodeShaderModule", "Object", "Threaded", "OpenGLCubemap", "ParticleEmitter"]
 
 			for ckey in cppHeader.classes:
 				print ">> Parsing class %s" % ckey
