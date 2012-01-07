@@ -58,7 +58,7 @@ SET(ZLIB_INCLUDE_DIR ${POLYCODE_RELEASE_DIR}/Framework/Core/Dependencies/include
 SET(OGG_LIBRARY libogg)
 SET(OGG_INCLUDE_DIR ${POLYCODE_RELEASE_DIR}/Framework/Core/Dependencies/include)
 SET(PNG_LIBRARY png)
-SET(PNG_PNG_INCLUDE_DIR ${POLYCODE_RELEASE_DIR}/Framework/Core/Dependencies/include)
+SET(PNG_INCLUDE_DIR ${POLYCODE_RELEASE_DIR}/Framework/Core/Dependencies/include)
 SET(PHYSFS_LIBRARY physfs)
 SET(PHYSFS_INCLUDE_DIR ${POLYCODE_RELEASE_DIR}/Framework/Core/Dependencies/include)
 SET(OPENAL_LIBRARY OpenAL32)
