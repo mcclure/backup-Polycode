@@ -131,6 +131,10 @@ function ParticleEmitter:ParticleEmitter(...)
 	end
 end
 
+function ParticleEmitter:dispatchTriggerCompleteEvent()
+	local retVal =  Polycore.ParticleEmitter_dispatchTriggerCompleteEvent(self.__ptr)
+end
+
 function ParticleEmitter:createParticles()
 	local retVal =  Polycore.ParticleEmitter_createParticles(self.__ptr)
 end

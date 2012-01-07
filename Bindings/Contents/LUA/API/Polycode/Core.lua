@@ -202,6 +202,16 @@ function Core:getUserPointer()
 	end
 end
 
+function Core:getDefaultWorkingDirectory()
+	local retVal =  Polycore.Core_getDefaultWorkingDirectory(self.__ptr)
+	return retVal
+end
+
+function Core:getUserHomeDirectory()
+	local retVal =  Polycore.Core_getUserHomeDirectory(self.__ptr)
+	return retVal
+end
+
 
 
 function Core:__delete()

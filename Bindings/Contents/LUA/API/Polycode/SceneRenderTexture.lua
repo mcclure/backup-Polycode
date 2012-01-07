@@ -36,6 +36,30 @@ function SceneRenderTexture:getTargetTexture()
 	end
 end
 
+function SceneRenderTexture:getFilterColorBufferTexture()
+	local retVal =  Polycore.SceneRenderTexture_getFilterColorBufferTexture(self.__ptr)
+	if retVal == nil then return nil end
+	if Polycore.__ptr_lookup[retVal] ~= nil then
+		return Polycore.__ptr_lookup[retVal]
+	else
+		Polycore.__ptr_lookup[retVal] = Texture("__skip_ptr__")
+		Polycore.__ptr_lookup[retVal].__ptr = retVal
+		return Polycore.__ptr_lookup[retVal]
+	end
+end
+
+function SceneRenderTexture:getFilterZBufferTexture()
+	local retVal =  Polycore.SceneRenderTexture_getFilterZBufferTexture(self.__ptr)
+	if retVal == nil then return nil end
+	if Polycore.__ptr_lookup[retVal] ~= nil then
+		return Polycore.__ptr_lookup[retVal]
+	else
+		Polycore.__ptr_lookup[retVal] = Texture("__skip_ptr__")
+		Polycore.__ptr_lookup[retVal].__ptr = retVal
+		return Polycore.__ptr_lookup[retVal]
+	end
+end
+
 function SceneRenderTexture:getTargetScene()
 	local retVal =  Polycore.SceneRenderTexture_getTargetScene(self.__ptr)
 	if retVal == nil then return nil end

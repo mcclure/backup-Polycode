@@ -121,12 +121,16 @@ function Renderer:unbindFramebuffers()
 	local retVal =  Polycore.Renderer_unbindFramebuffers(self.__ptr)
 end
 
-function Renderer:renderToTexture(targetTexture)
-	local retVal = Polycore.Renderer_renderToTexture(self.__ptr, targetTexture.__ptr)
-end
-
-function Renderer:renderZBufferToTexture(targetTexture)
-	local retVal = Polycore.Renderer_renderZBufferToTexture(self.__ptr, targetTexture.__ptr)
+function Renderer:renderScreenToImage()
+	local retVal =  Polycore.Renderer_renderScreenToImage(self.__ptr)
+	if retVal == nil then return nil end
+	if Polycore.__ptr_lookup[retVal] ~= nil then
+		return Polycore.__ptr_lookup[retVal]
+	else
+		Polycore.__ptr_lookup[retVal] = Image("__skip_ptr__")
+		Polycore.__ptr_lookup[retVal].__ptr = retVal
+		return Polycore.__ptr_lookup[retVal]
+	end
 end
 
 function Renderer:setFOV(fov)

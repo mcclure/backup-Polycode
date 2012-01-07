@@ -40,6 +40,10 @@ function ScreenParticleEmitter:getEmitter()
 	end
 end
 
+function ScreenParticleEmitter:dispatchTriggerCompleteEvent()
+	local retVal =  Polycore.ScreenParticleEmitter_dispatchTriggerCompleteEvent(self.__ptr)
+end
+
 function ScreenParticleEmitter:addParticleBody(particleBody)
 	local retVal = Polycore.ScreenParticleEmitter_addParticleBody(self.__ptr, particleBody.__ptr)
 end

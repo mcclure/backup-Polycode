@@ -32,6 +32,16 @@ function Image:loadPNG(fileName)
 	return retVal
 end
 
+function Image:saveImage(fileName)
+	local retVal = Polycore.Image_saveImage(self.__ptr, fileName)
+	return retVal
+end
+
+function Image:savePNG(fileName)
+	local retVal = Polycore.Image_savePNG(self.__ptr, fileName)
+	return retVal
+end
+
 function Image:createEmpty(width, height)
 	local retVal = Polycore.Image_createEmpty(self.__ptr, width, height)
 end

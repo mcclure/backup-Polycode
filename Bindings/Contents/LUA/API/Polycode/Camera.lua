@@ -77,8 +77,8 @@ function Camera:hasFilterShader()
 	return retVal
 end
 
-function Camera:drawFilter(targetTexture, targetTextureWidth, targetTextureHeight)
-	local retVal = Polycore.Camera_drawFilter(self.__ptr, targetTexture.__ptr, targetTextureWidth, targetTextureHeight)
+function Camera:drawFilter(targetTexture, targetTextureWidth, targetTextureHeight, targetColorTexture, targetZTexture)
+	local retVal = Polycore.Camera_drawFilter(self.__ptr, targetTexture.__ptr, targetTextureWidth, targetTextureHeight, targetColorTexture.__ptr, targetZTexture.__ptr)
 end
 
 function Camera:setExposureLevel(level)

@@ -64,6 +64,10 @@ function SceneParticleEmitter:Update()
 	local retVal =  Polycore.SceneParticleEmitter_Update(self.__ptr)
 end
 
+function SceneParticleEmitter:dispatchTriggerCompleteEvent()
+	local retVal =  Polycore.SceneParticleEmitter_dispatchTriggerCompleteEvent(self.__ptr)
+end
+
 
 
 function SceneParticleEmitter:__delete()
