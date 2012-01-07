@@ -88,12 +88,6 @@ SET(polycore_SRCS
     Source/tinyxmlparser.cpp
 )
 
-IF (MINGW)
-	SET(polycore_SRCS ${polycore_SRCS}
-		Source/GLee.cpp
-	)
-ENDIF(MINGW)
-
 SET(polycore_HDRS
     Include/OSBasics.h
     Include/PolyBasics.h
@@ -198,9 +192,16 @@ SET(CMAKE_DEBUG_POSTFIX "_d")
 #   Source/PolyGLES1Texture.cpp
 
 # platform specific
+IF (MINGW)
+	SET(polycore_SRCS ${polycore_SRCS}
+		Source/GLee.cpp
+	)
+ENDIF(MINGW)
+
 IF(MSVC OR MINGW)
     SET(polycore_SRCS ${polycore_SRCS} PolycodeView/MSVC/PolycodeView.cpp Source/PolyWinCore.cpp)
     SET(polycore_HDRS ${polycore_HDRS} PolycodeView/MSVC/PolycodeView.h Include/PolyWinCore.h)
+	MESSAGE(DEBUG " polycore_SRCS=${polycore_SRCS}")
 ELSEIF(APPLE)
     SET(polycore_SRCS ${polycore_SRCS} "PolycodeView/Mac OS X/PolycodeView.mm" Source/PolyCocoaCore.mm)
     SET(polycore_HDRS ${polycore_HDRS} "PolycodeView/Mac OS X/PolycodeView.h" Include/PolyCocoaCore.h)
@@ -234,13 +235,16 @@ IF(POLYCODE_INSTALL_FRAMEWORK)
     INSTALL(FILES ${polycore_HDRS} 
         DESTINATION Core/include)
 
-    IF(APPLE)
+	IF(MSVC OR MINGW)
+        INSTALL(FILES "PolycodeView/MSVC/PolycodeView.h" "PolycodeView/MSVC/PolycodeView.cpp"
+            DESTINATION "Core/PolycodeView")
+    ELSEIF(APPLE)
         INSTALL(FILES "PolycodeView/Mac OS X/PolycodeView.h" "PolycodeView/Mac OS X/PolycodeView.mm"
             DESTINATION "Core/PolycodeView")
-    ELSE(APPLE)
+    ELSE(MSVC OR MINGW)
         INSTALL(FILES "PolycodeView/Linux/PolycodeView.h" "PolycodeView/Linux/PolycodeView.cpp"
             DESTINATION "Core/PolycodeView")
-    ENDIF(APPLE)
+    ENDIF(MSVC OR MINGW)
 
     # install libraries
 #   IF(POLYCODE_BUILD_SHARED)
