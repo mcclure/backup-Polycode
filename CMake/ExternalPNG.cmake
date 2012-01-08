@@ -12,6 +12,13 @@ SET(libpng_CMAKE_ARGS
     -DSKIP_INSTALL_FILES=1
 )
 
+IF (MINGW)
+	SET(libpng_CMAKE_ARGS ${libpng_CMAKE_ARGS}
+		-DZLIB_LIBRARY=zlib
+		-DZLIB_INCLUDE_DIR=${install_dir}/include
+	)
+ENDIF(MINGW)
+
 EXTERNALPROJECT_ADD(zlib
     PREFIX ${libpng_PREFIX}
 
@@ -36,5 +43,5 @@ EXTERNALPROJECT_ADD(libpng
     URL_MD5 944b56a84b65d94054cc73d7ff965de8
 
     INSTALL_DIR ${POLYCODE_DEPS_CORE_PREFIX}
-    CMAKE_ARGS ${libpng_CMAKE_ARGS} -DCMAKE_PREFIX_PATH=${install_dir} -DZLIB_LIBRARY=zlib -DZLIB_INCLUDE_DIR=${install_dir}/include # to find zlib
+    CMAKE_ARGS ${libpng_CMAKE_ARGS} -DCMAKE_PREFIX_PATH=${install_dir} # to find zlib
 )
