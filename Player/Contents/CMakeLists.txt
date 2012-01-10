@@ -139,6 +139,7 @@ endif()
         ${OPENGL_LIBRARIES}
         ${OPENAL_LIBRARY}
         ${PNG_LIBRARIES}
+        ${ZLIB_LIBRARIES}
         ${FREETYPE_LIBRARIES}
         ${PHYSFS_LIBRARY}
         ${OGG_LIBRARY}
@@ -155,6 +156,7 @@ endif()
         ${OPENGL_LIBRARIES}
         ${OPENAL_LIBRARY}
         ${PNG_LIBRARIES}
+        ${ZLIB_LIBRARIES}
         ${FREETYPE_LIBRARIES}
         ${PHYSFS_LIBRARY}
         ${OGG_LIBRARY}
