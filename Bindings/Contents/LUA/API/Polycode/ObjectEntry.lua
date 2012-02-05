@@ -80,6 +80,10 @@ function ObjectEntry:addChild(name)
 	end
 end
 
+function ObjectEntry:Clear()
+	local retVal =  Polycore.ObjectEntry_Clear(self.__ptr)
+end
+
 
 
 function ObjectEntry:__delete()

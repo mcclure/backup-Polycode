@@ -74,6 +74,14 @@ function PhysicsSceneEntity:getType()
 	return retVal
 end
 
+function PhysicsSceneEntity:setVelocity(velocity)
+	local retVal = Physics3D.PhysicsSceneEntity_setVelocity(self.__ptr, velocity.__ptr)
+end
+
+function PhysicsSceneEntity:warpTo(position, resetRotation)
+	local retVal = Physics3D.PhysicsSceneEntity_warpTo(self.__ptr, position.__ptr, resetRotation)
+end
+
 
 
 function PhysicsSceneEntity:__delete()

@@ -36,6 +36,22 @@ function PhysicsScene:removeEntity(entity)
 	local retVal = Physics3D.PhysicsScene_removeEntity(self.__ptr, entity.__ptr)
 end
 
+function PhysicsScene:processWorldCollisions()
+	local retVal =  Physics3D.PhysicsScene_processWorldCollisions(self.__ptr)
+end
+
+function PhysicsScene:getPhysicsEntityByCollisionObject(object)
+	local retVal = Physics3D.PhysicsScene_getPhysicsEntityByCollisionObject(self.__ptr, object.__ptr)
+	if retVal == nil then return nil end
+	if Polycore.__ptr_lookup[retVal] ~= nil then
+		return Polycore.__ptr_lookup[retVal]
+	else
+		Polycore.__ptr_lookup[retVal] = PhysicsSceneEntity("__skip_ptr__")
+		Polycore.__ptr_lookup[retVal].__ptr = retVal
+		return Polycore.__ptr_lookup[retVal]
+	end
+end
+
 function PhysicsScene:removePhysicsChild(entity)
 	local retVal = Physics3D.PhysicsScene_removePhysicsChild(self.__ptr, entity.__ptr)
 end
@@ -92,6 +108,14 @@ function PhysicsScene:removeCharacterChild(character)
 	local retVal = Physics3D.PhysicsScene_removeCharacterChild(self.__ptr, character.__ptr)
 end
 
+function PhysicsScene:setVelocity(entity, velocity)
+	local retVal = Physics3D.PhysicsScene_setVelocity(self.__ptr, entity.__ptr, velocity.__ptr)
+end
+
+function PhysicsScene:warpEntity(entity, position, resetRotation)
+	local retVal = Physics3D.PhysicsScene_warpEntity(self.__ptr, entity.__ptr, position.__ptr, resetRotation)
+end
+
 function PhysicsScene:addVehicleChild(newEntity, mass, friction, group)
 	local retVal = Physics3D.PhysicsScene_addVehicleChild(self.__ptr, newEntity.__ptr, mass, friction, group)
 	if retVal == nil then return nil end
@@ -102,6 +126,10 @@ function PhysicsScene:addVehicleChild(newEntity, mass, friction, group)
 		Polycore.__ptr_lookup[retVal].__ptr = retVal
 		return Polycore.__ptr_lookup[retVal]
 	end
+end
+
+function PhysicsScene:setGravity(gravity)
+	local retVal = Physics3D.PhysicsScene_setGravity(self.__ptr, gravity.__ptr)
 end
 
 

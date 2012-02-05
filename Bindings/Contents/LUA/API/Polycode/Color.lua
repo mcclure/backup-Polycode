@@ -80,6 +80,25 @@ function Color:getBrightness()
 	return retVal
 end
 
+function Color:RGBtoHSV(r, g, b, h, s, v)
+	local retVal = Polycore.Color_RGBtoHSV(r, g, b, h, s, v)
+end
+
+function Color:getHue()
+	local retVal =  Polycore.Color_getHue(self.__ptr)
+	return retVal
+end
+
+function Color:getSaturation()
+	local retVal =  Polycore.Color_getSaturation(self.__ptr)
+	return retVal
+end
+
+function Color:getValue()
+	local retVal =  Polycore.Color_getValue(self.__ptr)
+	return retVal
+end
+
 function Color:getUint()
 	local retVal =  Polycore.Color_getUint(self.__ptr)
 	return retVal

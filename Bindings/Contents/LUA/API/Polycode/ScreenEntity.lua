@@ -15,6 +15,8 @@ function ScreenEntity:__index__(name)
 		return Polycore.ScreenEntity_get_zindex(self.__ptr)
 	elseif name == "snapToPixels" then
 		return Polycore.ScreenEntity_get_snapToPixels(self.__ptr)
+	elseif name == "processInputEvents" then
+		return Polycore.ScreenEntity_get_processInputEvents(self.__ptr)
 	end
 end
 
@@ -31,6 +33,9 @@ function ScreenEntity:__set_callback(name,value)
 		return true
 	elseif name == "snapToPixels" then
 		Polycore.ScreenEntity_set_snapToPixels(self.__ptr, value)
+		return true
+	elseif name == "processInputEvents" then
+		Polycore.ScreenEntity_set_processInputEvents(self.__ptr, value)
 		return true
 	end
 	return false
@@ -74,8 +79,8 @@ function ScreenEntity:getRotation()
 	return retVal
 end
 
-function ScreenEntity:_onMouseDown(x, y, mouseButton, timestamp)
-	local retVal = Polycore.ScreenEntity__onMouseDown(self.__ptr, x, y, mouseButton, timestamp)
+function ScreenEntity:_onMouseDown(x, y, mouseButton, timestamp, parentAdjust)
+	local retVal = Polycore.ScreenEntity__onMouseDown(self.__ptr, x, y, mouseButton, timestamp, parentAdjust.__ptr)
 	return retVal
 end
 

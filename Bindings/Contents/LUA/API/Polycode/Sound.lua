@@ -36,6 +36,11 @@ function Sound:setPitch(newPitch)
 	local retVal = Polycore.Sound_setPitch(self.__ptr, newPitch)
 end
 
+function Sound:isPlaying()
+	local retVal =  Polycore.Sound_isPlaying(self.__ptr)
+	return retVal
+end
+
 function Sound:setIsPositional(isPositional)
 	local retVal = Polycore.Sound_setIsPositional(self.__ptr, isPositional)
 end

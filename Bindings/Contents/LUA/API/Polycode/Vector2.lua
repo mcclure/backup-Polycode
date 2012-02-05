@@ -61,6 +61,11 @@ function Vector2:crossProduct(vec2)
 	return retVal
 end
 
+function Vector2:angle(vec2)
+	local retVal = Polycore.Vector2_angle(self.__ptr, vec2.__ptr)
+	return retVal
+end
+
 function Vector2:Normalize()
 	local retVal =  Polycore.Vector2_Normalize(self.__ptr)
 end

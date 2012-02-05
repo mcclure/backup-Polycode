@@ -334,6 +334,27 @@ static int Physics3D_PhysicsScene_removeEntity(lua_State *L) {
 	return 0;
 }
 
+static int Physics3D_PhysicsScene_processWorldCollisions(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	PhysicsScene *inst = (PhysicsScene*)lua_topointer(L, 1);
+	inst->processWorldCollisions();
+	return 0;
+}
+
+static int Physics3D_PhysicsScene_getPhysicsEntityByCollisionObject(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	PhysicsScene *inst = (PhysicsScene*)lua_topointer(L, 1);
+	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
+	btCollisionObject* object = (btCollisionObject*)lua_topointer(L, 2);
+	void *ptrRetVal = (void*)inst->getPhysicsEntityByCollisionObject(object);
+	if(ptrRetVal == NULL) {
+		lua_pushnil(L);
+	} else {
+		lua_pushlightuserdata(L, ptrRetVal);
+	}
+	return 1;
+}
+
 static int Physics3D_PhysicsScene_removePhysicsChild(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	PhysicsScene *inst = (PhysicsScene*)lua_topointer(L, 1);
@@ -480,6 +501,34 @@ static int Physics3D_PhysicsScene_removeCharacterChild(lua_State *L) {
 	return 0;
 }
 
+static int Physics3D_PhysicsScene_setVelocity(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	PhysicsScene *inst = (PhysicsScene*)lua_topointer(L, 1);
+	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
+	SceneEntity* entity = (SceneEntity*)lua_topointer(L, 2);
+	luaL_checktype(L, 3, LUA_TLIGHTUSERDATA);
+	Vector3 velocity = *(Vector3*)lua_topointer(L, 3);
+	inst->setVelocity(entity, velocity);
+	return 0;
+}
+
+static int Physics3D_PhysicsScene_warpEntity(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	PhysicsScene *inst = (PhysicsScene*)lua_topointer(L, 1);
+	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
+	SceneEntity* entity = (SceneEntity*)lua_topointer(L, 2);
+	luaL_checktype(L, 3, LUA_TLIGHTUSERDATA);
+	Vector3 position = *(Vector3*)lua_topointer(L, 3);
+	bool resetRotation;
+	if(lua_isboolean(L, 4)) {
+		resetRotation = lua_toboolean(L, 4);
+	} else {
+		resetRotation = false;
+	}
+	inst->warpEntity(entity, position, resetRotation);
+	return 0;
+}
+
 static int Physics3D_PhysicsScene_addVehicleChild(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	PhysicsScene *inst = (PhysicsScene*)lua_topointer(L, 1);
@@ -504,9 +553,67 @@ static int Physics3D_PhysicsScene_addVehicleChild(lua_State *L) {
 	return 1;
 }
 
+static int Physics3D_PhysicsScene_setGravity(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	PhysicsScene *inst = (PhysicsScene*)lua_topointer(L, 1);
+	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
+	Vector3 gravity = *(Vector3*)lua_topointer(L, 2);
+	inst->setGravity(gravity);
+	return 0;
+}
+
 static int Physics3D_delete_PhysicsScene(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	PhysicsScene *inst = (PhysicsScene*)lua_topointer(L, 1);
+	delete inst;
+	return 0;
+}
+
+static int Physics3D_PhysicsSceneEvent_get_appliedImpulse(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	PhysicsSceneEvent *inst = (PhysicsSceneEvent*)lua_topointer(L, 1);
+	lua_pushnumber(L, inst->appliedImpulse);
+	return 1;
+}
+
+static int Physics3D_PhysicsSceneEvent_get_positionOnA(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	PhysicsSceneEvent *inst = (PhysicsSceneEvent*)lua_topointer(L, 1);
+	lua_pushlightuserdata(L, &inst->positionOnA);
+	return 1;
+}
+
+static int Physics3D_PhysicsSceneEvent_get_positionOnB(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	PhysicsSceneEvent *inst = (PhysicsSceneEvent*)lua_topointer(L, 1);
+	lua_pushlightuserdata(L, &inst->positionOnB);
+	return 1;
+}
+
+static int Physics3D_PhysicsSceneEvent_get_worldNormalOnB(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	PhysicsSceneEvent *inst = (PhysicsSceneEvent*)lua_topointer(L, 1);
+	lua_pushlightuserdata(L, &inst->worldNormalOnB);
+	return 1;
+}
+
+static int Physics3D_PhysicsSceneEvent_set_appliedImpulse(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	PhysicsSceneEvent *inst = (PhysicsSceneEvent*)lua_topointer(L, 1);
+	Number param = lua_tonumber(L, 2);
+	inst->appliedImpulse = param;
+	return 0;
+}
+
+static int Physics3D_PhysicsSceneEvent(lua_State *L) {
+	PhysicsSceneEvent *inst = new PhysicsSceneEvent();
+	lua_pushlightuserdata(L, (void*)inst);
+	return 1;
+}
+
+static int Physics3D_delete_PhysicsSceneEvent(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	PhysicsSceneEvent *inst = (PhysicsSceneEvent*)lua_topointer(L, 1);
 	delete inst;
 	return 0;
 }
@@ -575,6 +682,26 @@ static int Physics3D_PhysicsSceneEntity_getType(lua_State *L) {
 	PhysicsSceneEntity *inst = (PhysicsSceneEntity*)lua_topointer(L, 1);
 	lua_pushinteger(L, inst->getType());
 	return 1;
+}
+
+static int Physics3D_PhysicsSceneEntity_setVelocity(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	PhysicsSceneEntity *inst = (PhysicsSceneEntity*)lua_topointer(L, 1);
+	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
+	Vector3 velocity = *(Vector3*)lua_topointer(L, 2);
+	inst->setVelocity(velocity);
+	return 0;
+}
+
+static int Physics3D_PhysicsSceneEntity_warpTo(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	PhysicsSceneEntity *inst = (PhysicsSceneEntity*)lua_topointer(L, 1);
+	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
+	Vector3 position = *(Vector3*)lua_topointer(L, 2);
+	luaL_checktype(L, 3, LUA_TBOOLEAN);
+	bool resetRotation = lua_toboolean(L, 3);
+	inst->warpTo(position, resetRotation);
+	return 0;
 }
 
 static int Physics3D_delete_PhysicsSceneEntity(lua_State *L) {

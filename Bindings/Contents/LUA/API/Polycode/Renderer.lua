@@ -321,8 +321,8 @@ function Renderer:createVertexBufferForMesh(mesh)
 	local retVal = Polycore.Renderer_createVertexBufferForMesh(self.__ptr, mesh.__ptr)
 end
 
-function Renderer:drawVertexBuffer(buffer)
-	local retVal = Polycore.Renderer_drawVertexBuffer(self.__ptr, buffer.__ptr)
+function Renderer:drawVertexBuffer(buffer, enableColorBuffer)
+	local retVal = Polycore.Renderer_drawVertexBuffer(self.__ptr, buffer.__ptr, enableColorBuffer)
 end
 
 function Renderer:setRenderMode(newR_enderMode)
