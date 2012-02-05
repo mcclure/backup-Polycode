@@ -48,14 +48,17 @@ PolycodeIDEApp::PolycodeIDEApp(PolycodeView *view) : EventDispatcher() {
 	editorManager = new PolycodeEditorManager();
 	
 	editorManager->registerEditorFactory(new PolycodeImageEditorFactory());
+	editorManager->registerEditorFactory(new PolycodeScreenEditorFactory());	
 	editorManager->registerEditorFactory(new PolycodeFontEditorFactory());
 	editorManager->registerEditorFactory(new PolycodeTextEditorFactory());
-	
+	editorManager->registerEditorFactory(new PolycodeProjectEditorFactory());
+		
 	frame = new PolycodeFrame();
 	frame->setPositionMode(ScreenEntity::POSITION_TOPLEFT);
 
 	frame->textInputPopup->addEventListener(this, UIEvent::OK_EVENT);	
 	frame->newProjectWindow->addEventListener(this, UIEvent::OK_EVENT);
+	frame->newFileWindow->addEventListener(this, UIEvent::OK_EVENT);	
 	frame->exampleBrowserWindow->addEventListener(this, UIEvent::OK_EVENT);
 	
 	frame->playButton->addEventListener(this, UIEvent::CLICK_EVENT);
@@ -106,6 +109,12 @@ void PolycodeIDEApp::newFile() {
 	if(projectManager->getActiveProject()) {
 		frame->newFileWindow->resetForm();
 		frame->showModal(frame->newFileWindow);
+	}
+}
+
+void PolycodeIDEApp::refreshProject() {
+	if(projectManager->getActiveProject()) {
+		frame->getProjectBrowser()->refreshProject(projectManager->getActiveProject());
 	}
 }
 
@@ -259,6 +268,17 @@ void PolycodeIDEApp::handleEvent(Event *event) {
 		if(event->getEventType() == "UIEvent" && event->getEventCode() == UIEvent::OK_EVENT) {
 			projectManager->createNewProject(frame->newProjectWindow->getTemplateFolder(), frame->newProjectWindow->getProjectName(), frame->newProjectWindow->getProjectLocation());
 			frame->hideModal();			
+		}
+	}
+
+	if(event->getDispatcher() == frame->newFileWindow) {
+		if(event->getEventType() == "UIEvent" && event->getEventCode() == UIEvent::OK_EVENT) {
+			projectManager->createNewFile(frame->newFileWindow->getTemplatePath(), frame->newFileWindow->getFileName());
+			frame->hideModal();			
+			
+			if(projectManager->getActiveProject()) {
+				frame->projectBrowser->refreshProject(projectManager->getActiveProject());
+			}			
 		}
 	}
 	
