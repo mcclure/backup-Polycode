@@ -91,8 +91,7 @@ Image::Image() {
 }
 
 Image::~Image() {
-	if(imageData != NULL)
-		free(imageData);
+	free(imageData);
 }
 
 char *Image::getPixels() {
@@ -115,8 +114,7 @@ unsigned int Image::getHeight() const {
 }
 
 void Image::createEmpty(unsigned int width, unsigned int height) {
-	if(imageData != NULL)
-		free(imageData);
+	free(imageData);
 		
 	imageData = (char*)malloc(width*height*pixelSize);
 	this->width = width;
