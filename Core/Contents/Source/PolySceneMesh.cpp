@@ -70,12 +70,11 @@ void SceneMesh::setMesh(Mesh *mesh) {
 	useVertexBuffer = false;	
 }
 
-
+// Assume material is managed externally.
 SceneMesh::~SceneMesh() {
 	delete mesh;
 	delete texture;
-	delete material;
-	delete skeleton;
+	delete skeleton; // Is it actually correct for a SceneMesh to take ownership of its skeleton?
 	delete localShaderOptions;
 }
 
