@@ -45,11 +45,10 @@ SceneMesh::SceneMesh(const String& fileName) : SceneEntity(), texture(NULL), mat
 	useVertexBuffer = false;
 }
 
-SceneMesh::SceneMesh(Mesh *mesh) : SceneEntity(), texture(NULL), material(NULL) {
+SceneMesh::SceneMesh(Mesh *mesh) : SceneEntity(), texture(NULL), material(NULL), skeleton(NULL), localShaderOptions(NULL) {
 	this->mesh = mesh;
 	bBoxRadius = mesh->getRadius();
 	bBox = mesh->calculateBBox();
-	skeleton = NULL;
 	lightmapIndex=0;
 	showVertexNormals = false;	
 	useVertexBuffer = false;	
@@ -76,6 +75,10 @@ void SceneMesh::setMesh(Mesh *mesh) {
 
 SceneMesh::~SceneMesh() {
 	delete mesh;
+	delete texture;
+	delete material;
+	delete skeleton;
+	delete localShaderOptions;
 }
 
 Mesh *SceneMesh::getMesh() {
