@@ -53,6 +53,7 @@ Label *ScreenLabel::getLabel() const {
 }
 
 void ScreenLabel::addDropShadow(Color color, Number size, Number offsetX, Number offsetY) {
+	delete dropShadowImage;
 	Image *labelImage = new Image(label);
 	labelImage->fastBlur(size);
 	dropShadowImage = new ScreenImage(labelImage);
