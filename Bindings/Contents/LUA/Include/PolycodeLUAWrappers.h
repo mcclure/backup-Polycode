@@ -92,7 +92,7 @@ namespace Polycode {
 class LuaEventHandler : public EventHandler {
 public:
 	LuaEventHandler() : EventHandler() {}
-	~LuaEventHandler();
+	virtual ~LuaEventHandler();
 	void handleEvent(Event *e) {
 		lua_rawgeti( L, LUA_REGISTRYINDEX, wrapperIndex );
 		lua_getfield(L, -1, "__handleEvent");
