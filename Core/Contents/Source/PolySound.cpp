@@ -275,9 +275,6 @@ ALuint Sound::loadOGG(const String& fileName) {
 	
 	alBufferData(bufferID, format, &buffer[0], static_cast<ALsizei>(buffer.size()), freq);
 	
-	OSBasics::close(f);
-	f = NULL;
-	
 	return bufferID;
 }
 
