@@ -155,7 +155,7 @@ namespace Polycode {
 			 */
 			void getScreenInfo(int *width, int *height, int *hz);
 		
-			~CoreServices();
+			virtual ~CoreServices();
 		
 		protected:
 		
