@@ -35,11 +35,10 @@
 
 using namespace Polycode;
 
-SceneMesh::SceneMesh(const String& fileName) : SceneEntity(), texture(NULL), material(NULL) {
+SceneMesh::SceneMesh(const String& fileName) : SceneEntity(), texture(NULL), material(NULL), skeleton(NULL), localShaderOptions(NULL) {
 	mesh = new Mesh(fileName);
 	bBoxRadius = mesh->getRadius();
 	bBox = mesh->calculateBBox();
-	skeleton = NULL;
 	lightmapIndex=0;
 	showVertexNormals = false;
 	useVertexBuffer = false;
@@ -54,11 +53,10 @@ SceneMesh::SceneMesh(Mesh *mesh) : SceneEntity(), texture(NULL), material(NULL),
 	useVertexBuffer = false;	
 }
 
-SceneMesh::SceneMesh(int meshType) : texture(NULL), material(NULL) {
+SceneMesh::SceneMesh(int meshType) : texture(NULL), material(NULL), skeleton(NULL), localShaderOptions(NULL) {
 	mesh = new Mesh(meshType);
 	bBoxRadius = mesh->getRadius();
 	bBox = mesh->calculateBBox();
-	skeleton = NULL;
 	lightmapIndex=0;
 	showVertexNormals = false;	
 	useVertexBuffer = false;	
