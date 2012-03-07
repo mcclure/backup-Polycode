@@ -37,13 +37,13 @@ PhysicsSceneEvent::PhysicsSceneEvent() : Event () {
 	eventType = "PhysicsSceneEvent";
 }
 
-PhysicsScene::PhysicsScene(int maxSubSteps) : CollisionScene() {
+PhysicsScene::PhysicsScene(int maxSubSteps) : CollisionScene(), physicsWorld(NULL) {
 	this->maxSubSteps = maxSubSteps;
-	initPhysicsScene();	
+	initPhysicsScene();
 }
 
 PhysicsScene::~PhysicsScene() {
-	
+	// Physics children and physicsWorld will be deleted by ~CollisionScene.
 }
 
 void worldTickCallback(btDynamicsWorld *world, btScalar timeStep) {
@@ -75,6 +75,7 @@ void PhysicsScene::initPhysicsScene() {
 	
 	sweepBP->getOverlappingPairCache()->setInternalGhostPairCallback(new btGhostPairCallback());
 	
+	delete world; // FIXME: initCollisionWorld creates a collisionworld we then just delete. This is silly.
 	world = physicsWorld;
 	
 	physicsWorld->setInternalTickCallback(worldTickCallback, this);

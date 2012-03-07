@@ -27,11 +27,11 @@ THE SOFTWARE.
 
 using namespace Polycode;
 
-CollisionScene::CollisionScene() : Scene() {
+CollisionScene::CollisionScene() : Scene(), world(NULL), broadphase(NULL), dispatcher(NULL), collisionConfiguration(NULL) {
 	initCollisionScene();
 }
 
-CollisionScene::CollisionScene(bool virtualScene) : Scene(virtualScene) { 
+CollisionScene::CollisionScene(bool virtualScene) : Scene(virtualScene), world(NULL), broadphase(NULL), dispatcher(NULL), collisionConfiguration(NULL) { 
 	initCollisionScene();
 }
 

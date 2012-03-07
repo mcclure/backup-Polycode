@@ -28,7 +28,7 @@ THE SOFTWARE.
 
 using namespace Polycode;
 
-PhysicsVehicle::PhysicsVehicle(SceneEntity *entity, Number mass, Number friction,btDefaultVehicleRaycaster *rayCaster): PhysicsSceneEntity(entity, PhysicsSceneEntity::SHAPE_BOX, mass, friction, 1) {
+PhysicsVehicle::PhysicsVehicle(SceneEntity *entity, Number mass, Number friction,btDefaultVehicleRaycaster *_rayCaster): PhysicsSceneEntity(entity, PhysicsSceneEntity::SHAPE_BOX, mass, friction, 1), rayCaster(_rayCaster), vehicle(NULL) {
 	
 }
 
@@ -110,6 +110,10 @@ void PhysicsVehicle::Update() {
 }
 
 PhysicsVehicle::~PhysicsVehicle() {
+	delete rayCaster;
+	delete vehicle;
+	for(int i = 0; i < wheels.size(); i++)
+		delete wheels[i].wheelEntity;
 }
 
 PhysicsCharacter::PhysicsCharacter(SceneEntity *entity, Number mass, Number friction, Number stepSize) : PhysicsSceneEntity(entity, PhysicsSceneEntity::CHARACTER_CONTROLLER, mass, friction, 1) {	
@@ -172,7 +176,8 @@ void PhysicsCharacter::Update() {
 }
 
 PhysicsCharacter::~PhysicsCharacter() {
-	
+	delete character;
+	delete ghostObject;
 }
 
 PhysicsSceneEntity::PhysicsSceneEntity(SceneEntity *entity, int type, Number mass, Number friction, Number restitution) : CollisionSceneEntity(entity, type) {
@@ -259,5 +264,5 @@ SceneEntity *PhysicsSceneEntity::getSceneEntity() {
 }
 
 PhysicsSceneEntity::~PhysicsSceneEntity() {
-	
+	delete rigidBody;
 }
