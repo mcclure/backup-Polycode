@@ -43,9 +43,15 @@ PhysicsScene::PhysicsScene(int maxSubSteps, bool virtualScene) : CollisionScene(
 }
 
 PhysicsScene::~PhysicsScene() {
-	// Physics children and physicsWorld will be deleted by ~CollisionScene.
+	for(int i=0; i < collisionChildren.size(); i++)
+		delete collisionChildren[i];
+	delete physicsWorld;
 	delete solver;
 	delete broadphase;
+	
+	// Prevent double free by ~CollisionScene
+	collisionChildren.clear();
+	world = NULL;
 }
 
 void worldTickCallback(btDynamicsWorld *world, btScalar timeStep) {
