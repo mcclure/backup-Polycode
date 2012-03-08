@@ -208,7 +208,7 @@ PhysicsSceneEntity::PhysicsSceneEntity(SceneEntity *entity, int type, Number mas
 	if(type == CHARACTER_CONTROLLER) {
 		rigidBody = NULL;
 	} else {	
-		btDefaultMotionState* myMotionState = new btDefaultMotionState(transform);
+		myMotionState = new btDefaultMotionState(transform);
 		btRigidBody::btRigidBodyConstructionInfo rbInfo(mass,myMotionState,shape,localInertia);
 		rigidBody = new btRigidBody(rbInfo);
 //		rigidBody->setActivationState(ISLAND_SLEEPING);		
@@ -265,4 +265,5 @@ SceneEntity *PhysicsSceneEntity::getSceneEntity() {
 
 PhysicsSceneEntity::~PhysicsSceneEntity() {
 	delete rigidBody;
+	delete myMotionState;
 }
