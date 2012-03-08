@@ -28,6 +28,7 @@ THE SOFTWARE.
 class btDiscreteDynamicsWorld;
 class btDbvtBroadphase;
 class btSequentialImpulseConstraintSolver;
+class btGhostPairCallback;
 
 namespace Polycode {
 
@@ -109,6 +110,7 @@ namespace Polycode {
 		// Kept just to be deleted
 		btDbvtBroadphase *broadphase;
 		btSequentialImpulseConstraintSolver *solver;
+		btGhostPairCallback *ghostPairCallback;
 	};
 	
 }

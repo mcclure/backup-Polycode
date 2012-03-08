@@ -37,21 +37,24 @@ PhysicsSceneEvent::PhysicsSceneEvent() : Event () {
 	eventType = "PhysicsSceneEvent";
 }
 
-PhysicsScene::PhysicsScene(int maxSubSteps, bool virtualScene) : CollisionScene(virtualScene, true), physicsWorld(NULL), solver(NULL), broadphase(NULL) {
+PhysicsScene::PhysicsScene(int maxSubSteps, bool virtualScene) : CollisionScene(virtualScene, true), physicsWorld(NULL), solver(NULL), broadphase(NULL), ghostPairCallback(NULL) {
 	this->maxSubSteps = maxSubSteps;
 	initPhysicsScene();
 }
 
 PhysicsScene::~PhysicsScene() {
+	// These MUST be deleted first
 	for(int i=0; i < collisionChildren.size(); i++)
 		delete collisionChildren[i];
 	delete physicsWorld;
-	delete solver;
-	delete broadphase;
 	
 	// Prevent double free by ~CollisionScene
 	collisionChildren.clear();
 	world = NULL;
+	
+	delete solver;
+	delete broadphase;
+	delete ghostPairCallback;
 }
 
 void worldTickCallback(btDynamicsWorld *world, btScalar timeStep) {
@@ -77,7 +80,8 @@ void PhysicsScene::initPhysicsScene() {
 //	physicsWorld->getSolverInfo().m_solverMode |= SOLVER_RANDMIZE_ORDER;
 	physicsWorld->setGravity(btVector3(0,-10,0));
 	
-	axisSweep->getOverlappingPairCache()->setInternalGhostPairCallback(new btGhostPairCallback());
+	ghostPairCallback = new btGhostPairCallback();
+	axisSweep->getOverlappingPairCache()->setInternalGhostPairCallback(ghostPairCallback);
 	
 	world = physicsWorld;
 	
