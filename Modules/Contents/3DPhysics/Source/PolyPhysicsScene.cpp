@@ -37,13 +37,15 @@ PhysicsSceneEvent::PhysicsSceneEvent() : Event () {
 	eventType = "PhysicsSceneEvent";
 }
 
-PhysicsScene::PhysicsScene(int maxSubSteps) : CollisionScene(), physicsWorld(NULL) {
+PhysicsScene::PhysicsScene(int maxSubSteps, bool virtualScene) : CollisionScene(virtualScene, true), physicsWorld(NULL), solver(NULL), broadphase(NULL) {
 	this->maxSubSteps = maxSubSteps;
 	initPhysicsScene();
 }
 
 PhysicsScene::~PhysicsScene() {
 	// Physics children and physicsWorld will be deleted by ~CollisionScene.
+	delete solver;
+	delete broadphase;
 }
 
 void worldTickCallback(btDynamicsWorld *world, btScalar timeStep) {
@@ -52,30 +54,25 @@ void worldTickCallback(btDynamicsWorld *world, btScalar timeStep) {
 }
 
 void PhysicsScene::initPhysicsScene() {
-		
+	collisionConfiguration = new btDefaultCollisionConfiguration();
+
+	dispatcher = new btCollisionDispatcher(collisionConfiguration);	
 	
- btDefaultCollisionConfiguration* collisionConfiguration = new btDefaultCollisionConfiguration();
-//	btDbvtBroadphase* broadphase = new btDbvtBroadphase();
-	
-	btCollisionDispatcher* dispatcher = new btCollisionDispatcher(collisionConfiguration);	
-	
-	btSequentialImpulseConstraintSolver* solver = new btSequentialImpulseConstraintSolver();
+	solver = new btSequentialImpulseConstraintSolver();
 	
 	btVector3 worldMin(-100,-100,-100);
 	btVector3 worldMax(100,100,100);
-	btAxisSweep3* sweepBP = new btAxisSweep3(worldMin,worldMax);	
+	axisSweep = new btAxisSweep3(worldMin,worldMax);	
 	
-	btDbvtBroadphase *broadPhase = new btDbvtBroadphase();
+	broadphase = new btDbvtBroadphase();
 	
-	physicsWorld = new btDiscreteDynamicsWorld(dispatcher,broadPhase,solver,collisionConfiguration);
+	physicsWorld = new btDiscreteDynamicsWorld(dispatcher,broadphase,solver,collisionConfiguration);
 	
 //	physicsWorld->getSolverInfo().m_solverMode |= SOLVER_RANDMIZE_ORDER;
 	physicsWorld->setGravity(btVector3(0,-10,0));
 	
+	axisSweep->getOverlappingPairCache()->setInternalGhostPairCallback(new btGhostPairCallback());
 	
-	sweepBP->getOverlappingPairCache()->setInternalGhostPairCallback(new btGhostPairCallback());
-	
-	delete world; // FIXME: initCollisionWorld creates a collisionworld we then just delete. This is silly.
 	world = physicsWorld;
 	
 	physicsWorld->setInternalTickCallback(worldTickCallback, this);

@@ -313,7 +313,13 @@ static int Physics3D_PhysicsScene(lua_State *L) {
 	} else {
 		maxSubSteps = 0;
 	}
-	PhysicsScene *inst = new PhysicsScene(maxSubSteps);
+	bool virtualScene;
+	if(lua_isboolean(L, 2)) {
+		virtualScene = lua_toboolean(L, 2);
+	} else {
+		virtualScene = false;
+	}
+	PhysicsScene *inst = new PhysicsScene(maxSubSteps, virtualScene);
 	lua_pushlightuserdata(L, (void*)inst);
 	return 1;
 }

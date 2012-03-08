@@ -26,6 +26,8 @@ THE SOFTWARE.
 #include <vector>
 
 class btDiscreteDynamicsWorld;
+class btDbvtBroadphase;
+class btSequentialImpulseConstraintSolver;
 
 namespace Polycode {
 
@@ -60,7 +62,7 @@ namespace Polycode {
 		/**
 		* Main constructor.
 		*/
-		PhysicsScene(int maxSubSteps = 0);
+		PhysicsScene(int maxSubSteps = 0, bool virtualScene = false);
 		virtual ~PhysicsScene();	
 		
 		void Update();		
@@ -104,6 +106,9 @@ namespace Polycode {
 		btDiscreteDynamicsWorld* physicsWorld;
 		std::vector<PhysicsSceneEntity*> physicsChildren;
 		
+		// Kept just to be deleted
+		btDbvtBroadphase *broadphase;
+		btSequentialImpulseConstraintSolver *solver;
 	};
 	
 }
