@@ -125,8 +125,8 @@ namespace Polycode {
 		*/
 		SceneEntity *getEntityAtScreenPosition(Number x, Number y);
 		
-		void Render(Camera *targetCamera = NULL);
-		void RenderDepthOnly(Camera *targetCamera);
+		virtual void Render(Camera *targetCamera = NULL);
+		virtual void RenderDepthOnly(Camera *targetCamera);
 		
 		static String readString(OSFILE *inFile);
 		void loadScene(const String& fileName);

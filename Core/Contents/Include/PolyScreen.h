@@ -83,7 +83,7 @@ namespace Polycode {
 		*/
 		ScreenEntity *getEntityAt(Number x, Number y);
 
-		void Render();
+		virtual void Render();
 		void setRenderer(Renderer *renderer);
 
 		/**
