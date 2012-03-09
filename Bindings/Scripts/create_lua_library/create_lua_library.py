@@ -3,7 +3,7 @@ import CppHeaderParser
 import os
 import re
 
-def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, apiPath, apiClassPath, includePath, sourcePath):	
+def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, apiPath, apiClassPath, includePath, sourcePath, inheritInModuleList):	
 	out = ""
 	sout = ""
 	
@@ -55,6 +55,8 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 	
 	for fileName in filteredFiles:
 		inheritInModule = ["PhysicsSceneEntity", "CollisionScene", "CollisionSceneEntity"]
+		if inheritInModuleList:
+			inheritInModule += inheritInModuleList.split(",")
 		headerFile = "%s/%s" % (inputPath, fileName)
 		print "Parsing %s" % fileName
 		try:
@@ -488,7 +490,7 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 returncode = 0
 
 if len(sys.argv) < 10:
-	print ("Usage:\n%s [input path] [prefix] [main include] [lib small name] [lib name] [api path] [api class-path] [include path] [source path]" % (sys.argv[0]))
+	print ("Usage:\n%s [input path] [prefix] [main include] [lib small name] [lib name] [api path] [api class-path] [include path] [source path] [inherit-in-module list (optional)]" % (sys.argv[0]))
 	sys.exit(1)
 else:
-	createLUABindings(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6], sys.argv[7], sys.argv[8], sys.argv[9])
+	createLUABindings(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6], sys.argv[7], sys.argv[8], sys.argv[9], sys.argv[10] if len(sys.argv)>10 else None)
