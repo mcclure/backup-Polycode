@@ -99,7 +99,7 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 							lout += "%s = %s\n" % (pp["name"], pp["defaltValue"])
 					else:
 						#there are some bugs in the class parser that cause it to return junk
-						if pp["type"].find("*") == -1 and pp["type"].find("vector") == -1 and pp["name"] != "16" and pp["name"] != "setScale" and pp["name"] != "setPosition" and pp["name"] != "BUFFER_CACHE_PRECISION":
+						if pp["type"].find("*") == -1 and pp["type"].find("vector") == -1 and pp["name"] != "setScale" and pp["name"] != "setPosition" and pp["name"] != "BUFFER_CACHE_PRECISION" and not pp["name"].isdigit():
 							pps.append(pp)
 						#if pp["type"] == "Number" or  pp["type"] == "String" or pp["type"] == "int" or pp["type"] == "bool":
 						#	pps.append(pp)
