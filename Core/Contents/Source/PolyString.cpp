@@ -81,6 +81,8 @@ void String::setDataWithEncoding(char *data, int encoding) {
 		case ENCODING_UTF8: {
 			if (data)
 				contents = data;
+			else
+				contents = std::string();
 		}
 		default:
 			break;
