@@ -1032,6 +1032,8 @@ int luaopen_Polycode(lua_State *L) {
 		{"ShaderBinding_getNumOutTargetBindings", Polycore_ShaderBinding_getNumOutTargetBindings},
 		{"ShaderBinding_getOutTargetBinding", Polycore_ShaderBinding_getOutTargetBinding},
 		{"ShaderBinding_addLocalParam", Polycore_ShaderBinding_addLocalParam},
+		{"ShaderBinding_addLocalParamNumber", Polycore_ShaderBinding_addLocalParamNumber},
+		{"ShaderBinding_addLocalParamVector3", Polycore_ShaderBinding_addLocalParamVector3},
 		{"delete_ShaderBinding", Polycore_delete_ShaderBinding},
 		{"SkeletonAnimation", Polycore_SkeletonAnimation},
 		{"SkeletonAnimation_addBoneTrack", Polycore_SkeletonAnimation_addBoneTrack},

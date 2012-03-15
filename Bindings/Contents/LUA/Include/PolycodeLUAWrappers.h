@@ -9900,6 +9900,28 @@ static int Polycore_ShaderBinding_addLocalParam(lua_State *L) {
 	return 0;
 }
 
+static int Polycore_ShaderBinding_addLocalParamNumber(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	ShaderBinding *inst = (ShaderBinding*)lua_topointer(L, 1);
+	luaL_checktype(L, 2, LUA_TSTRING);
+	String name = String(lua_tostring(L, 2));
+	luaL_checktype(L, 3, LUA_TNUMBER);
+	Number n = lua_tonumber(L, 3);
+	inst->addLocalParamNumber(name, n);
+	return 0;
+}
+
+static int Polycore_ShaderBinding_addLocalParamVector3(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	ShaderBinding *inst = (ShaderBinding*)lua_topointer(L, 1);
+	luaL_checktype(L, 2, LUA_TSTRING);
+	String name = String(lua_tostring(L, 2));
+	luaL_checktype(L, 3, LUA_TLIGHTUSERDATA);
+	Vector3 v = *(Vector3*)lua_topointer(L, 3);
+	inst->addLocalParamVector3(name, v);
+	return 0;
+}
+
 static int Polycore_delete_ShaderBinding(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	ShaderBinding *inst = (ShaderBinding*)lua_topointer(L, 1);

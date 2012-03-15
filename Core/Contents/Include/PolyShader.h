@@ -116,7 +116,9 @@ namespace Polycode {
 			RenderTargetBinding *getOutTargetBinding(unsigned int index);
 			
 			void addLocalParam(const String& name, void *ptr);
-			
+			void addLocalParamNumber(const String& name, Number n);
+			void addLocalParamVector3(const String& name, Vector3 v);
+		
 			Shader* shader;
 			std::vector<LocalShaderParam*> localParams;
 			std::vector<RenderTargetBinding*> renderTargetBindings;
