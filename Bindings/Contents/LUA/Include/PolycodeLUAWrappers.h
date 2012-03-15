@@ -9609,6 +9609,46 @@ static int Polycore_delete_ScreenSprite(lua_State *L) {
 	return 0;
 }
 
+static int Polycore_LocalShaderParam_get_name(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	LocalShaderParam *inst = (LocalShaderParam*)lua_topointer(L, 1);
+	lua_pushstring(L, inst->name.c_str());
+	return 1;
+}
+
+static int Polycore_LocalShaderParam_set_name(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	LocalShaderParam *inst = (LocalShaderParam*)lua_topointer(L, 1);
+	String param = lua_tostring(L, 2);
+	inst->name = param;
+	return 0;
+}
+
+static int Polycore_LocalShaderParam_setNumber(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	LocalShaderParam *inst = (LocalShaderParam*)lua_topointer(L, 1);
+	luaL_checktype(L, 2, LUA_TNUMBER);
+	Number n = lua_tonumber(L, 2);
+	inst->setNumber(n);
+	return 0;
+}
+
+static int Polycore_LocalShaderParam_setVector3(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	LocalShaderParam *inst = (LocalShaderParam*)lua_topointer(L, 1);
+	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
+	Vector3 v = *(Vector3*)lua_topointer(L, 2);
+	inst->setVector3(v);
+	return 0;
+}
+
+static int Polycore_delete_LocalShaderParam(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	LocalShaderParam *inst = (LocalShaderParam*)lua_topointer(L, 1);
+	delete inst;
+	return 0;
+}
+
 static int Polycore_Shader_get_numSpotLights(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Shader *inst = (Shader*)lua_topointer(L, 1);
