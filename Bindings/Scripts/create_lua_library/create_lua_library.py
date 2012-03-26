@@ -3,7 +3,7 @@ import CppHeaderParser
 import os
 import re
 
-def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, apiPath, apiClassPath, includePath, sourcePath, inheritInModuleList):	
+def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, apiPath, apiClassPath, includePath, sourcePath, inheritInModuleFiles):	
 	out = ""
 	sout = ""
 	
@@ -55,8 +55,16 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 	
 	for fileName in filteredFiles:
 		inheritInModule = ["PhysicsSceneEntity", "CollisionScene", "CollisionSceneEntity"]
-		if inheritInModuleList:
-			inheritInModule += inheritInModuleList.split(",")
+		
+		# A file or comma-separated list of files can be given to specify classes which are "package owned"
+		# and should not be inherited out of Polycode/. The files should contain one class name per line,
+		# and the class name may be prefixed with a path (which will be ignored).
+		if inheritInModuleFiles:
+			for filename in inheritInModuleFiles.split(","):
+				with open(filename) as f:
+					for line in f.readlines():
+						inheritInModule.append(line.strip().split("/",1)[-1]) # Strip whitespace, path/
+					
 		headerFile = "%s/%s" % (inputPath, fileName)
 		print "Parsing %s" % fileName
 		try:
@@ -490,7 +498,7 @@ def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, api
 returncode = 0
 
 if len(sys.argv) < 10:
-	print ("Usage:\n%s [input path] [prefix] [main include] [lib small name] [lib name] [api path] [api class-path] [include path] [source path] [inherit-in-module list (optional)]" % (sys.argv[0]))
+	print ("Usage:\n%s [input path] [prefix] [main include] [lib small name] [lib name] [api path] [api class-path] [include path] [source path] [inherit-in-module-file path (optional)]" % (sys.argv[0]))
 	sys.exit(1)
 else:
 	createLUABindings(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6], sys.argv[7], sys.argv[8], sys.argv[9], sys.argv[10] if len(sys.argv)>10 else None)
