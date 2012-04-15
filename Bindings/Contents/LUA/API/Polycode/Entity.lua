@@ -470,6 +470,22 @@ function Entity:clearMask()
 	local retVal =  Polycore.Entity_clearMask(self.__ptr)
 end
 
+function Entity:setUserData(userData)
+	local retVal = Polycore.Entity_setUserData(self.__ptr, userData.__ptr)
+end
+
+function Entity:getUserData()
+	local retVal =  Polycore.Entity_getUserData(self.__ptr)
+	if retVal == nil then return nil end
+	if Polycore.__ptr_lookup[retVal] ~= nil then
+		return Polycore.__ptr_lookup[retVal]
+	else
+		Polycore.__ptr_lookup[retVal] = void("__skip_ptr__")
+		Polycore.__ptr_lookup[retVal].__ptr = retVal
+		return Polycore.__ptr_lookup[retVal]
+	end
+end
+
 function Entity:setBlendingMode(newBl_endingMode)
 	local retVal = Polycore.Entity_setBlendingMode(self.__ptr, newBl_endingMode)
 end

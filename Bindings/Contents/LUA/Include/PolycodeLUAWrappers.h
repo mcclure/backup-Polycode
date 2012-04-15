@@ -2901,6 +2901,27 @@ static int Polycore_Entity_clearMask(lua_State *L) {
 	return 0;
 }
 
+static int Polycore_Entity_setUserData(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Entity *inst = (Entity*)lua_topointer(L, 1);
+	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
+	void* userData = (void*)lua_topointer(L, 2);
+	inst->setUserData(userData);
+	return 0;
+}
+
+static int Polycore_Entity_getUserData(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Entity *inst = (Entity*)lua_topointer(L, 1);
+	void *ptrRetVal = (void*)inst->getUserData();
+	if(ptrRetVal == NULL) {
+		lua_pushnil(L);
+	} else {
+		lua_pushlightuserdata(L, ptrRetVal);
+	}
+	return 1;
+}
+
 static int Polycore_Entity_setBlendingMode(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Entity *inst = (Entity*)lua_topointer(L, 1);
@@ -7864,6 +7885,24 @@ static int Polycore_SceneLine(lua_State *L) {
 	return 1;
 }
 
+static int Polycore_SceneLine_setStart(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	SceneLine *inst = (SceneLine*)lua_topointer(L, 1);
+	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
+	Vector3 start = *(Vector3*)lua_topointer(L, 2);
+	inst->setStart(start);
+	return 0;
+}
+
+static int Polycore_SceneLine_setEnd(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	SceneLine *inst = (SceneLine*)lua_topointer(L, 1);
+	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
+	Vector3 _end = *(Vector3*)lua_topointer(L, 2);
+	inst->setEnd(_end);
+	return 0;
+}
+
 static int Polycore_SceneLine_Render(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	SceneLine *inst = (SceneLine*)lua_topointer(L, 1);
@@ -11316,6 +11355,15 @@ static int Polycore_Vector3_distance(lua_State *L) {
 	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
 	Vector3 vec2 = *(Vector3*)lua_topointer(L, 2);
 	lua_pushnumber(L, inst->distance(vec2));
+	return 1;
+}
+
+static int Polycore_Vector3_angleBetween(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Vector3 *inst = (Vector3*)lua_topointer(L, 1);
+	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
+	Vector3 dest = *(Vector3*)lua_topointer(L, 2);
+	lua_pushnumber(L, inst->angleBetween(dest));
 	return 1;
 }
 

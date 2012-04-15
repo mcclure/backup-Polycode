@@ -51,6 +51,11 @@ function Vector3:distance(vec2)
 	return retVal
 end
 
+function Vector3:angleBetween(dest)
+	local retVal = Polycore.Vector3_angleBetween(self.__ptr, dest.__ptr)
+	return retVal
+end
+
 function Vector3:length()
 	local retVal =  Polycore.Vector3_length(self.__ptr)
 	return retVal

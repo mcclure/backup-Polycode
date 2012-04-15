@@ -28,6 +28,14 @@ function SceneLine:SceneLine(...)
 	end
 end
 
+function SceneLine:setStart(start)
+	local retVal = Polycore.SceneLine_setStart(self.__ptr, start.__ptr)
+end
+
+function SceneLine:setEnd(_end)
+	local retVal = Polycore.SceneLine_setEnd(self.__ptr, _end.__ptr)
+end
+
 function SceneLine:Render()
 	local retVal =  Polycore.SceneLine_Render(self.__ptr)
 end
