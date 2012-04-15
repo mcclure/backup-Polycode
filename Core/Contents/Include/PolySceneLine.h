@@ -43,6 +43,9 @@ namespace Polycode {
 			SceneLine(Vector3 start, Vector3 end);
 			virtual ~SceneLine();
 			
+			void setStart(Vector3 start);
+			void setEnd(Vector3 end);
+						
 			void Render();
 			
 		protected:		
