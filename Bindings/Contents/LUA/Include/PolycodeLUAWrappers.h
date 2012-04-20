@@ -10422,6 +10422,33 @@ static int Polycore_Sound_setPositionalProperties(lua_State *L) {
 	return 0;
 }
 
+static int Polycore_Sound_loadBytes(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Sound *inst = (Sound*)lua_topointer(L, 1);
+	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
+	char* data = (char*)lua_topointer(L, 2);
+	luaL_checktype(L, 3, LUA_TNUMBER);
+	int size = lua_tointeger(L, 3);
+	int channels;
+	if(lua_isnumber(L, 4)) {
+		channels = lua_tointeger(L, 4);
+	} else {
+		channels = 1;
+	}
+	luaL_checktype(L, 5, LUA_TLIGHTUSERDATA);
+	ALsizei freq = *(ALsizei*)lua_topointer(L, 5);
+	int bps;
+	if(lua_isnumber(L, 6)) {
+		bps = lua_tointeger(L, 6);
+	} else {
+		bps = 16;
+	}
+	ALuint *retInst = new ALuint();
+	*retInst = inst->loadBytes(data, size, channels, freq, bps);
+	lua_pushlightuserdata(L, retInst);
+	return 1;
+}
+
 static int Polycore_Sound_loadWAV(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Sound *inst = (Sound*)lua_topointer(L, 1);

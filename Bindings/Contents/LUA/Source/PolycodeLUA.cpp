@@ -1089,6 +1089,7 @@ int luaopen_Polycode(lua_State *L) {
 		{"Sound_setSoundVelocity", Polycore_Sound_setSoundVelocity},
 		{"Sound_setSoundDirection", Polycore_Sound_setSoundDirection},
 		{"Sound_setPositionalProperties", Polycore_Sound_setPositionalProperties},
+		{"Sound_loadBytes", Polycore_Sound_loadBytes},
 		{"Sound_loadWAV", Polycore_Sound_loadWAV},
 		{"Sound_loadOGG", Polycore_Sound_loadOGG},
 		{"Sound_GenSource", Polycore_Sound_GenSource},

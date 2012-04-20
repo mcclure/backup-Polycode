@@ -61,6 +61,18 @@ function Sound:setPositionalProperties(referenceDistance, maxDistance)
 	local retVal = Polycore.Sound_setPositionalProperties(self.__ptr, referenceDistance, maxDistance)
 end
 
+function Sound:loadBytes(data, size, channels, freq, bps)
+	local retVal = Polycore.Sound_loadBytes(self.__ptr, data.__ptr, size, channels, freq.__ptr, bps)
+	if retVal == nil then return nil end
+	if Polycore.__ptr_lookup[retVal] ~= nil then
+		return Polycore.__ptr_lookup[retVal]
+	else
+		Polycore.__ptr_lookup[retVal] = ALuint("__skip_ptr__")
+		Polycore.__ptr_lookup[retVal].__ptr = retVal
+		return Polycore.__ptr_lookup[retVal]
+	end
+end
+
 function Sound:loadWAV(fileName)
 	local retVal = Polycore.Sound_loadWAV(self.__ptr, fileName)
 	if retVal == nil then return nil end
