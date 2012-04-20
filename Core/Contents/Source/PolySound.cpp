@@ -73,7 +73,7 @@ Sound::Sound(const String& fileName) {
 	setIsPositional(false);
 }
 
-Sound::Sound(const char *data, int size, int freq, int channels, int bps) {
+Sound::Sound(const char *data, int size, int channels, int freq, int bps) {
 	ALuint buffer = loadBytes(data, size, freq, channels, bps);
 	
 	soundSource = GenSource(buffer);
