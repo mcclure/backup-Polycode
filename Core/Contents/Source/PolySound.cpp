@@ -52,7 +52,7 @@ long custom_tellfunc(void *datasource) {
 	return OSBasics::tell(file);
 }
 
-Sound::Sound(const String& fileName) {
+Sound::Sound(const String& fileName) : sampleLength(-1) {
 	String extension;
 	size_t found;
 	found=fileName.rfind(".");
@@ -73,7 +73,7 @@ Sound::Sound(const String& fileName) {
 	setIsPositional(false);
 }
 
-Sound::Sound(const char *data, int size, int channels, int freq, int bps) {
+Sound::Sound(const char *data, int size, int channels, int freq, int bps) : sampleLength(-1) {
 	ALuint buffer = loadBytes(data, size, freq, channels, bps);
 	
 	soundSource = GenSource(buffer);
@@ -154,7 +154,7 @@ void Sound::setOffset(int off) {
 }
 
 int Sound::getOffset() {
-	ALint off;
+	ALint off = -1;
 	alGetSourcei(soundSource, AL_SAMPLE_OFFSET, &off);
 	return off;
 }
