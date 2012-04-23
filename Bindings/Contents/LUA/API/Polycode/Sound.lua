@@ -57,6 +57,20 @@ function Sound:setSoundDirection(direction)
 	local retVal = Polycore.Sound_setSoundDirection(self.__ptr, direction.__ptr)
 end
 
+function Sound:setOffset(off)
+	local retVal = Polycore.Sound_setOffset(self.__ptr, off)
+end
+
+function Sound:getOffset()
+	local retVal =  Polycore.Sound_getOffset(self.__ptr)
+	return retVal
+end
+
+function Sound:getSampleLength()
+	local retVal =  Polycore.Sound_getSampleLength(self.__ptr)
+	return retVal
+end
+
 function Sound:setPositionalProperties(referenceDistance, maxDistance)
 	local retVal = Polycore.Sound_setPositionalProperties(self.__ptr, referenceDistance, maxDistance)
 end

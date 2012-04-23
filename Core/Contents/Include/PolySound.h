@@ -90,6 +90,10 @@ namespace Polycode {
 		void setSoundVelocity(Vector3 velocity);
 		void setSoundDirection(Vector3 direction);
 		
+		void setOffset(int off);
+		int getOffset();
+		int getSampleLength();
+		
 		void setPositionalProperties(Number referenceDistance, Number maxDistance);
 		
 		ALuint loadBytes(const char *data, int size, int channels = 1, ALsizei freq = 44100, int bps = 16);
@@ -109,6 +113,7 @@ namespace Polycode {
 	
 		bool isPositional;
 		ALuint soundSource;
+		int sampleLength;
 		
 	};
 }

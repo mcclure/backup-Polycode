@@ -10411,6 +10411,29 @@ static int Polycore_Sound_setSoundDirection(lua_State *L) {
 	return 0;
 }
 
+static int Polycore_Sound_setOffset(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Sound *inst = (Sound*)lua_topointer(L, 1);
+	luaL_checktype(L, 2, LUA_TNUMBER);
+	int off = lua_tointeger(L, 2);
+	inst->setOffset(off);
+	return 0;
+}
+
+static int Polycore_Sound_getOffset(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Sound *inst = (Sound*)lua_topointer(L, 1);
+	lua_pushinteger(L, inst->getOffset());
+	return 1;
+}
+
+static int Polycore_Sound_getSampleLength(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Sound *inst = (Sound*)lua_topointer(L, 1);
+	lua_pushinteger(L, inst->getSampleLength());
+	return 1;
+}
+
 static int Polycore_Sound_setPositionalProperties(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Sound *inst = (Sound*)lua_topointer(L, 1);
