@@ -58,6 +58,10 @@ Screen::~Screen() {
 		delete rootEntity; // Must delete this at minimum
 	}
 	CoreServices::getInstance()->getScreenManager()->removeScreen(this);	
+	
+	for(int i=0; i < localShaderOptions.size(); i++)
+		delete localShaderOptions[i];
+	delete originalSceneTexture;
 }
 
 void Screen::setNormalizedCoordinates(bool newVal, Number yCoordinateSize) {

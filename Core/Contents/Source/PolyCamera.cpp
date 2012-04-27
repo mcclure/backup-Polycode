@@ -37,13 +37,17 @@ Camera::Camera(Scene *parentScene) : SceneEntity() {
 	orthoMode = false;
 	fov = 45.0f;
 	originalSceneTexture = NULL;
+	zBufferSceneTexture = NULL;
 	exposureLevel = 1.0f;
 	_hasFilterShader = false;	
 	fovSet = false;
 }
 
 Camera::~Camera() {
-
+	for(int i=0; i < localShaderOptions.size(); i++)
+		delete localShaderOptions[i];
+	delete originalSceneTexture;
+	delete zBufferSceneTexture;
 }
 
 void Camera::setExposureLevel(Number level) {
