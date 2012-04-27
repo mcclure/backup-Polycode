@@ -173,7 +173,7 @@ void Screen::setScreenShader(const String& shaderName) {
 		return;
 	
 	if(!originalSceneTexture) {
-	CoreServices::getInstance()->getRenderer()->createRenderTextures(&originalSceneTexture, NULL, CoreServices::getInstance()->getCore()->getXRes(), CoreServices::getInstance()->getCore()->getYRes(), filterShaderMaterial->fp16RenderTargets);
+		CoreServices::getInstance()->getRenderer()->createRenderTextures(&originalSceneTexture, NULL, CoreServices::getInstance()->getCore()->getXRes(), CoreServices::getInstance()->getCore()->getYRes(), filterShaderMaterial->fp16RenderTargets);
 	}
 	
 	for(int i=0; i < filterShaderMaterial->getNumShaders(); i++) {
