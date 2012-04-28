@@ -31,6 +31,7 @@
 #include "PolyScreenEntity.h"
 #include "PolyScreenEvent.h"
 #include "PolyShader.h"
+#include "PolyTexture.h"
 
 using namespace Polycode;
 

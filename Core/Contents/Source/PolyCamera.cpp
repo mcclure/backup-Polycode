@@ -29,6 +29,7 @@
 #include "PolyResourceManager.h"
 #include "PolyScene.h"
 #include "PolyShader.h"
+#include "PolyTexture.h"
 
 using namespace Polycode;
 			
