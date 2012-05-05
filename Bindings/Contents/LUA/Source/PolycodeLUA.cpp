@@ -457,6 +457,7 @@ int luaopen_Polycode(lua_State *L) {
 		{"Matrix4_setPosition", Polycore_Matrix4_setPosition},
 		{"Matrix4_setScale", Polycore_Matrix4_setScale},
 		{"Matrix4_getEulerAngles", Polycore_Matrix4_getEulerAngles},
+		{"Matrix4_transpose", Polycore_Matrix4_transpose},
 		{"Matrix4_inverse", Polycore_Matrix4_inverse},
 		{"Matrix4_inverseAffine", Polycore_Matrix4_inverseAffine},
 		{"Matrix4_determinant", Polycore_Matrix4_determinant},

@@ -4390,6 +4390,15 @@ static int Polycore_Matrix4_getEulerAngles(lua_State *L) {
 	return 0;
 }
 
+static int Polycore_Matrix4_transpose(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Matrix4 *inst = (Matrix4*)lua_topointer(L, 1);
+	 Matrix4 *retInst = new  Matrix4();
+	*retInst = inst->transpose();
+	lua_pushlightuserdata(L, retInst);
+	return 1;
+}
+
 static int Polycore_Matrix4_inverse(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Matrix4 *inst = (Matrix4*)lua_topointer(L, 1);
