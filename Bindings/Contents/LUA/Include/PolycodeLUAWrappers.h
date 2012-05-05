@@ -4408,6 +4408,24 @@ static int Polycore_Matrix4_inverseAffine(lua_State *L) {
 	return 1;
 }
 
+static int Polycore_Matrix4_determinant(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	Matrix4 *inst = (Matrix4*)lua_topointer(L, 1);
+	lua_pushnumber(L, inst->determinant());
+	return 1;
+}
+
+static int Polycore_Matrix4_generalDeterminant(lua_State *L) {
+	luaL_checktype(L, 2, LUA_TLIGHTUSERDATA);
+	Number** a = (Number**)lua_topointer(L, 2);
+	luaL_checktype(L, 3, LUA_TNUMBER);
+	int n = lua_tointeger(L, 3);
+	 Number *retInst = new  Number();
+	*retInst = Matrix4::generalDeterminant(a, n);
+	lua_pushlightuserdata(L, retInst);
+	return 1;
+}
+
 static int Polycore_delete_Matrix4(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	Matrix4 *inst = (Matrix4*)lua_topointer(L, 1);

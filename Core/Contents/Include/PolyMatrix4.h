@@ -252,7 +252,19 @@ namespace Polycode {
 			* Returns the affine inverse of the matrix.
 			*/			
 			Matrix4 inverseAffine() const;
-	
+		
+			/**
+			* Returns the determinant of the matrix.
+			*/
+			Number determinant() const;
+		
+			/**
+			 * Returns the determinant of any general (square) matrix.
+			 * @param a A square matrix as an array of pointers to rows (or columns).
+			 * @param n The number of dimensions in matrix A.
+			 */
+			static Number generalDeterminant(Number const* const*a, int n);
+		
 		protected:
 		
 	};

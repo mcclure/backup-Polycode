@@ -84,6 +84,23 @@ function Matrix4:inverseAffine()
 	end
 end
 
+function Matrix4:determinant()
+	local retVal =  Polycore.Matrix4_determinant(self.__ptr)
+	return retVal
+end
+
+function Matrix4:generalDeterminant(a, n)
+	local retVal = Polycore.Matrix4_generalDeterminant(a.__ptr, n)
+	if retVal == nil then return nil end
+	if Polycore.__ptr_lookup[retVal] ~= nil then
+		return Polycore.__ptr_lookup[retVal]
+	else
+		Polycore.__ptr_lookup[retVal] = Number("__skip_ptr__")
+		Polycore.__ptr_lookup[retVal].__ptr = retVal
+		return Polycore.__ptr_lookup[retVal]
+	end
+end
+
 
 
 function Matrix4:__delete()
