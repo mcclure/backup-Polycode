@@ -60,6 +60,18 @@ function Matrix4:getEulerAngles(ax, ay, az)
 	local retVal = Polycore.Matrix4_getEulerAngles(self.__ptr, ax.__ptr, ay.__ptr, az.__ptr)
 end
 
+function Matrix4:transpose()
+	local retVal =  Polycore.Matrix4_transpose(self.__ptr)
+	if retVal == nil then return nil end
+	if Polycore.__ptr_lookup[retVal] ~= nil then
+		return Polycore.__ptr_lookup[retVal]
+	else
+		Polycore.__ptr_lookup[retVal] = Matrix4("__skip_ptr__")
+		Polycore.__ptr_lookup[retVal].__ptr = retVal
+		return Polycore.__ptr_lookup[retVal]
+	end
+end
+
 function Matrix4:inverse()
 	local retVal =  Polycore.Matrix4_inverse(self.__ptr)
 	if retVal == nil then return nil end
@@ -79,6 +91,23 @@ function Matrix4:inverseAffine()
 		return Polycore.__ptr_lookup[retVal]
 	else
 		Polycore.__ptr_lookup[retVal] = Matrix4("__skip_ptr__")
+		Polycore.__ptr_lookup[retVal].__ptr = retVal
+		return Polycore.__ptr_lookup[retVal]
+	end
+end
+
+function Matrix4:determinant()
+	local retVal =  Polycore.Matrix4_determinant(self.__ptr)
+	return retVal
+end
+
+function Matrix4:generalDeterminant(a, n)
+	local retVal = Polycore.Matrix4_generalDeterminant(a.__ptr, n)
+	if retVal == nil then return nil end
+	if Polycore.__ptr_lookup[retVal] ~= nil then
+		return Polycore.__ptr_lookup[retVal]
+	else
+		Polycore.__ptr_lookup[retVal] = Number("__skip_ptr__")
 		Polycore.__ptr_lookup[retVal].__ptr = retVal
 		return Polycore.__ptr_lookup[retVal]
 	end
