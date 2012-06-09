@@ -132,6 +132,18 @@ function PhysicsScene:setGravity(gravity)
 	local retVal = Physics3D.PhysicsScene_setGravity(self.__ptr, gravity.__ptr)
 end
 
+function PhysicsScene:getPhysicsWorld()
+	local retVal =  Physics3D.PhysicsScene_getPhysicsWorld(self.__ptr)
+	if retVal == nil then return nil end
+	if Polycore.__ptr_lookup[retVal] ~= nil then
+		return Polycore.__ptr_lookup[retVal]
+	else
+		Polycore.__ptr_lookup[retVal] = btDiscreteDynamicsWorld("__skip_ptr__")
+		Polycore.__ptr_lookup[retVal].__ptr = retVal
+		return Polycore.__ptr_lookup[retVal]
+	end
+end
+
 
 
 function PhysicsScene:__delete()

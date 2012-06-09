@@ -48,6 +48,7 @@ CoreServices::setInstance(inst);
 		{"PhysicsScene_warpEntity", Physics3D_PhysicsScene_warpEntity},
 		{"PhysicsScene_addVehicleChild", Physics3D_PhysicsScene_addVehicleChild},
 		{"PhysicsScene_setGravity", Physics3D_PhysicsScene_setGravity},
+		{"PhysicsScene_getPhysicsWorld", Physics3D_PhysicsScene_getPhysicsWorld},
 		{"delete_PhysicsScene", Physics3D_delete_PhysicsScene},
 		{"PhysicsSceneEvent_get_appliedImpulse", Physics3D_PhysicsSceneEvent_get_appliedImpulse},
 		{"PhysicsSceneEvent_get_positionOnA", Physics3D_PhysicsSceneEvent_get_positionOnA},

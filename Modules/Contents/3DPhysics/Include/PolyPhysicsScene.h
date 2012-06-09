@@ -98,6 +98,8 @@ namespace Polycode {
 			//@}
 			// ----------------------------------------------------------------------------------------------------------------
 
+		btDiscreteDynamicsWorld* getPhysicsWorld() { return physicsWorld; }
+		std::vector<PhysicsSceneEntity*> &getPhysicsChildren() { return physicsChildren; }
 		
 	protected:
 		

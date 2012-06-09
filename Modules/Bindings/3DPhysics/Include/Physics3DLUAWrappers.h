@@ -568,6 +568,18 @@ static int Physics3D_PhysicsScene_setGravity(lua_State *L) {
 	return 0;
 }
 
+static int Physics3D_PhysicsScene_getPhysicsWorld(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	PhysicsScene *inst = (PhysicsScene*)lua_topointer(L, 1);
+	void *ptrRetVal = (void*)inst->getPhysicsWorld();
+	if(ptrRetVal == NULL) {
+		lua_pushnil(L);
+	} else {
+		lua_pushlightuserdata(L, ptrRetVal);
+	}
+	return 1;
+}
+
 static int Physics3D_delete_PhysicsScene(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	PhysicsScene *inst = (PhysicsScene*)lua_topointer(L, 1);
