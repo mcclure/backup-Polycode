@@ -16,6 +16,10 @@ function SceneMesh:__index__(name)
 		end
 	elseif name == "showVertexNormals" then
 		return Polycore.SceneMesh_get_showVertexNormals(self.__ptr)
+	elseif name == "ownsMesh" then
+		return Polycore.SceneMesh_get_ownsMesh(self.__ptr)
+	elseif name == "ownsTexture" then
+		return Polycore.SceneMesh_get_ownsTexture(self.__ptr)
 	elseif name == "ownsSkeleton" then
 		return Polycore.SceneMesh_get_ownsSkeleton(self.__ptr)
 	end
@@ -25,6 +29,12 @@ end
 function SceneMesh:__set_callback(name,value)
 	if name == "showVertexNormals" then
 		Polycore.SceneMesh_set_showVertexNormals(self.__ptr, value)
+		return true
+	elseif name == "ownsMesh" then
+		Polycore.SceneMesh_set_ownsMesh(self.__ptr, value)
+		return true
+	elseif name == "ownsTexture" then
+		Polycore.SceneMesh_set_ownsTexture(self.__ptr, value)
 		return true
 	elseif name == "ownsSkeleton" then
 		Polycore.SceneMesh_set_ownsSkeleton(self.__ptr, value)

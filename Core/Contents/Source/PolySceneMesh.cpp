@@ -42,6 +42,8 @@ SceneMesh::SceneMesh(const String& fileName) : SceneEntity(), texture(NULL), mat
 	lightmapIndex=0;
 	showVertexNormals = false;
 	useVertexBuffer = false;
+	ownsMesh = true;
+	ownsTexture = false;
 	ownsSkeleton = false;
 }
 
@@ -52,6 +54,8 @@ SceneMesh::SceneMesh(Mesh *mesh) : SceneEntity(), texture(NULL), material(NULL),
 	lightmapIndex=0;
 	showVertexNormals = false;	
 	useVertexBuffer = false;
+	ownsMesh = false;
+	ownsTexture = false;
 	ownsSkeleton = false;
 }
 
@@ -62,6 +66,8 @@ SceneMesh::SceneMesh(int meshType) : texture(NULL), material(NULL), skeleton(NUL
 	lightmapIndex=0;
 	showVertexNormals = false;	
 	useVertexBuffer = false;
+	ownsMesh = true;
+	ownsTexture = false;
 	ownsSkeleton = false;
 }
 
@@ -71,13 +77,15 @@ void SceneMesh::setMesh(Mesh *mesh) {
 	bBox = mesh->calculateBBox();
 	showVertexNormals = false;	
 	useVertexBuffer = false;
-	ownsSkeleton = false;
+	ownsMesh = false;
 }
 
 // Assume material is managed externally.
 SceneMesh::~SceneMesh() {
-	delete mesh;
-	delete texture;
+	if (ownsMesh)
+		delete mesh;
+	if (ownsTexture)
+		delete texture;
 	if (ownsSkeleton)
 		delete skeleton;
 	delete localShaderOptions;
@@ -89,6 +97,7 @@ Mesh *SceneMesh::getMesh() {
 
 void SceneMesh::setTexture(Texture *texture) {
 	this->texture = texture;
+	ownsTexture = false;
 }
 
 void SceneMesh::setMaterial(Material *material) {
@@ -115,6 +124,7 @@ Texture *SceneMesh::getTexture() {
 
 void SceneMesh::loadTexture(const String& fileName, bool clamp) {
 	texture = CoreServices::getInstance()->getMaterialManager()->createTextureFromFile(fileName, clamp);
+	texture = false; // Texture is owned by material manager, not mesh.
 }
 
 ShaderBinding *SceneMesh::getLocalShaderOptions() {

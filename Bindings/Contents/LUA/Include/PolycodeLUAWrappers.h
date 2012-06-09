@@ -8021,6 +8021,20 @@ static int Polycore_SceneMesh_get_showVertexNormals(lua_State *L) {
 	return 1;
 }
 
+static int Polycore_SceneMesh_get_ownsMesh(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	SceneMesh *inst = (SceneMesh*)lua_topointer(L, 1);
+	lua_pushboolean(L, inst->ownsMesh);
+	return 1;
+}
+
+static int Polycore_SceneMesh_get_ownsTexture(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	SceneMesh *inst = (SceneMesh*)lua_topointer(L, 1);
+	lua_pushboolean(L, inst->ownsTexture);
+	return 1;
+}
+
 static int Polycore_SceneMesh_get_ownsSkeleton(lua_State *L) {
 	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
 	SceneMesh *inst = (SceneMesh*)lua_topointer(L, 1);
@@ -8033,6 +8047,22 @@ static int Polycore_SceneMesh_set_showVertexNormals(lua_State *L) {
 	SceneMesh *inst = (SceneMesh*)lua_topointer(L, 1);
 	bool param = lua_toboolean(L, 2);
 	inst->showVertexNormals = param;
+	return 0;
+}
+
+static int Polycore_SceneMesh_set_ownsMesh(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	SceneMesh *inst = (SceneMesh*)lua_topointer(L, 1);
+	bool param = lua_toboolean(L, 2);
+	inst->ownsMesh = param;
+	return 0;
+}
+
+static int Polycore_SceneMesh_set_ownsTexture(lua_State *L) {
+	luaL_checktype(L, 1, LUA_TLIGHTUSERDATA);
+	SceneMesh *inst = (SceneMesh*)lua_topointer(L, 1);
+	bool param = lua_toboolean(L, 2);
+	inst->ownsTexture = param;
 	return 0;
 }
 
