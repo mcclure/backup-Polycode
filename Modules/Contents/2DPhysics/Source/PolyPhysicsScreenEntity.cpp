@@ -35,6 +35,8 @@ PhysicsScreenEntity::PhysicsScreenEntity(ScreenEntity *entity, b2World *world, N
 	
 	this->worldScale = worldScale;
 	
+	Vector3 entityScale = entity->getScale();
+	
 	screenEntity = entity;
 	
 	shape = NULL;
@@ -43,7 +45,7 @@ PhysicsScreenEntity::PhysicsScreenEntity(ScreenEntity *entity, b2World *world, N
 	bodyDef->position.Set(screenEntity->getPosition().x/worldScale, screenEntity->getPosition().y/worldScale);
 	bodyDef->angle = screenEntity->getRotation()*(PI/180.0f);	
 	bodyDef->bullet = isSensor;	
-	bodyDef->fixedRotation = fixedRotation;
+	bodyDef->fixedRotation = fixedRotation;	
 	
 	if(isStatic) {
 		bodyDef->type = b2_staticBody;		
@@ -90,7 +92,7 @@ PhysicsScreenEntity::PhysicsScreenEntity(ScreenEntity *entity, b2World *world, N
 		case ENTITY_RECT: 
 		{
 			b2PolygonShape *b2shape = new b2PolygonShape;			
-			b2shape->SetAsBox(screenEntity->getWidth()/(worldScale*2.0f), screenEntity->getHeight()/(worldScale*2.0f));
+			b2shape->SetAsBox(screenEntity->getWidth()/(worldScale*2.0f) * entityScale.x, screenEntity->getHeight()/(worldScale*2.0f) * entityScale.y);
 			fDef.shape = b2shape;						
 			shape = b2shape;
 		}

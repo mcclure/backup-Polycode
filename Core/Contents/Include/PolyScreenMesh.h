@@ -36,6 +36,12 @@ namespace Polycode {
 	*/
 	class _PolyExport ScreenMesh : public ScreenEntity {
 		public:
+		
+			/**
+			* Creates the screen mesh from existing Mesh.
+			*/
+			ScreenMesh(Mesh *mesh);
+			
 			/**
 			* Creates the screen mesh and loads a mesh from a file name.
 			*/
@@ -77,6 +83,14 @@ namespace Polycode {
 			* @param Texture to apply.
 			*/						
 			void setTexture(Texture *texture);
+			
+			/**
+			* If this is set to true, the lines in wireframe meshes will be anti-aliased if the support is available in the renderer.
+			*/			
+			bool lineSmooth;
+			
+			Number lineWidth;
+			
 			
 		protected:
 		

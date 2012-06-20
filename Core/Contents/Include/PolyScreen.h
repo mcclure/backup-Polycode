@@ -147,6 +147,11 @@ namespace Polycode {
 		Material *getScreenShaderMaterial() const { return filterShaderMaterial; }
 		
 		/**
+		* If set to true, will process touch events as mouse clicks. Defaults to false.
+		*/		
+		bool processTouchEventsAsMouse;
+		
+		/**
 		 * If set to true, children will be deleted when the screen is deleted. Defaults false.
 		 */
 		bool ownsChildren;

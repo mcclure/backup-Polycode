@@ -46,6 +46,7 @@ using namespace Polycode;
 PFNGLUSEPROGRAMPROC glUseProgram;
 PFNGLUNIFORM1IPROC glUniform1i;
 PFNGLUNIFORM1FPROC glUniform1f;
+PFNGLUNIFORM2FPROC glUniform2f;
 PFNGLUNIFORM3FPROC glUniform3f;
 extern PFNGLACTIVETEXTUREPROC glActiveTexture;
 PFNGLCREATESHADERPROC glCreateShader;
@@ -71,6 +72,7 @@ GLSLShaderModule::GLSLShaderModule() : PolycodeShaderModule() {
 	glUseProgram   = (PFNGLUSEPROGRAMPROC)wglGetProcAddress("glUseProgram");
 	glUniform1i = (PFNGLUNIFORM1IPROC)wglGetProcAddress("glUniform1i");
 	glUniform1f = (PFNGLUNIFORM1FPROC)wglGetProcAddress("glUniform1f");	
+	glUniform2f = (PFNGLUNIFORM2FPROC)wglGetProcAddress("glUniform2f");	
 	glUniform3f = (PFNGLUNIFORM3FPROC)wglGetProcAddress("glUniform3f");
 	glCreateShader = (PFNGLCREATESHADERPROC)wglGetProcAddress("glCreateShader");
 	glShaderSource = (PFNGLSHADERSOURCEPROC)wglGetProcAddress("glShaderSource");
@@ -377,10 +379,15 @@ void GLSLShaderModule::updateGLSLParam(Renderer *renderer, GLSLShader *glslShade
 				glUniform1f(paramLocation, *fval);
 				break;
 			}
+			case GLSLProgramParam::PARAM_Number2:
+			{
+				Vector2 *fval2 = (Vector2*)paramData;
+				int paramLocation = glGetUniformLocation(glslShader->shader_id, param.name.c_str());
+				glUniform2f(paramLocation, fval2->x, fval2->y);				break;				
+			}			
 			case GLSLProgramParam::PARAM_Number3:
 			{
 				Vector3 *fval3 = (Vector3*)paramData;
-				fval = (Number*)paramData;
 				int paramLocation = glGetUniformLocation(glslShader->shader_id, param.name.c_str());
 				glUniform3f(paramLocation, fval3->x,fval3->y,fval3->z);
 				break;				

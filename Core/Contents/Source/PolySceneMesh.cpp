@@ -35,37 +35,49 @@
 
 using namespace Polycode;
 
-SceneMesh::SceneMesh(const String& fileName) : SceneEntity(), texture(NULL), material(NULL), skeleton(NULL), localShaderOptions(NULL) {
+SceneMesh::SceneMesh(const String& fileName) : SceneEntity(), texture(NULL), material(NULL) {
 	mesh = new Mesh(fileName);
 	bBoxRadius = mesh->getRadius();
 	bBox = mesh->calculateBBox();
+	skeleton = NULL;
+	localShaderOptions = NULL;
 	lightmapIndex=0;
 	showVertexNormals = false;
 	useVertexBuffer = false;
+	lineSmooth = false;
+	lineWidth = 1.0;
 	ownsMesh = true;
 	ownsTexture = false;
 	ownsSkeleton = false;
 }
 
-SceneMesh::SceneMesh(Mesh *mesh) : SceneEntity(), texture(NULL), material(NULL), skeleton(NULL), localShaderOptions(NULL) {
+SceneMesh::SceneMesh(Mesh *mesh) : SceneEntity(), texture(NULL), material(NULL) {
 	this->mesh = mesh;
 	bBoxRadius = mesh->getRadius();
 	bBox = mesh->calculateBBox();
+	skeleton = NULL;
+	localShaderOptions = NULL;
 	lightmapIndex=0;
 	showVertexNormals = false;	
 	useVertexBuffer = false;
+	lineSmooth = false;
+	lineWidth = 1.0;
 	ownsMesh = false;
 	ownsTexture = false;
 	ownsSkeleton = false;
 }
 
-SceneMesh::SceneMesh(int meshType) : texture(NULL), material(NULL), skeleton(NULL), localShaderOptions(NULL) {
+SceneMesh::SceneMesh(int meshType) : texture(NULL), material(NULL) {
 	mesh = new Mesh(meshType);
 	bBoxRadius = mesh->getRadius();
 	bBox = mesh->calculateBBox();
+	skeleton = NULL;
+	localShaderOptions = NULL;
 	lightmapIndex=0;
 	showVertexNormals = false;	
-	useVertexBuffer = false;
+	useVertexBuffer = false;	
+	lineSmooth = false;
+	lineWidth = 1.0;
 	ownsMesh = true;
 	ownsTexture = false;
 	ownsSkeleton = false;
@@ -124,7 +136,7 @@ Texture *SceneMesh::getTexture() {
 
 void SceneMesh::loadTexture(const String& fileName, bool clamp) {
 	texture = CoreServices::getInstance()->getMaterialManager()->createTextureFromFile(fileName, clamp);
-	texture = false; // Texture is owned by material manager, not mesh.
+	ownsTexture = false; // Texture is owned by material manager, not mesh.
 }
 
 ShaderBinding *SceneMesh::getLocalShaderOptions() {
@@ -243,6 +255,9 @@ void SceneMesh::cacheToVertexBuffer(bool cache) {
 void SceneMesh::Render() {
 	
 	Renderer *renderer = CoreServices::getInstance()->getRenderer();
+	
+	renderer->setLineSize(lineWidth);
+	renderer->setLineSmooth(lineSmooth);
 	
 	if(material) {
 		renderer->applyMaterial(material, localShaderOptions,0);

@@ -148,6 +148,9 @@ namespace Polycode {
 			 * If this is set to true, the skeleton will be deleted when the mesh is deleted. Defaults false, is set false when an external skeleton is passed in and true when an internal skeleton is created.
 			 */
 			bool ownsSkeleton;
+			Number lineWidth;
+			bool lineSmooth;	
+		
 		protected:
 		
 			bool useVertexBuffer;

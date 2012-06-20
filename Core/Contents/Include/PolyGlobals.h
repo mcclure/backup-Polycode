@@ -24,6 +24,8 @@ THE SOFTWARE.
 
 // Polycode CORE LIBRARY CONFIGURATION SECTION
 
+#define WINDOWS_TOUCH_SUPPORT
+
 // Compile support for lua bindings.
 //#define _COMPILE_LUA
 
@@ -69,6 +71,8 @@ THE SOFTWARE.
 #endif
 
 typedef double Number;
+
+#define RANDOM_NUMBER ((Number)rand()/(Number)RAND_MAX)
 
 inline Number clampf(Number x, Number a, Number b)
 {
