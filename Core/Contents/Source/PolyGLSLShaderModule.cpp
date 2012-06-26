@@ -400,8 +400,6 @@ bool GLSLShaderModule::applyShaderMaterial(Renderer *renderer, Material *materia
 
 	GLSLShader *glslShader = (GLSLShader*)material->getShader(shaderIndex);
 
-	renderer->sortLights();
-
 	glPushMatrix();
 	glLoadIdentity();
 	
@@ -410,7 +408,11 @@ bool GLSLShaderModule::applyShaderMaterial(Renderer *renderer, Material *materia
 	int numRendererSpotLights = renderer->getNumSpotLights();
 	
 	int numTotalLights = glslShader->numAreaLights + glslShader->numSpotLights;
-		
+	
+	if(numTotalLights > 0) {
+		renderer->sortLights();	
+	}
+	
 	for(int i=0 ; i < numTotalLights; i++) {
 		GLfloat resetData[] = {0.0, 0.0, 0.0, 0.0};				
 		glLightfv (GL_LIGHT0+i, GL_DIFFUSE, resetData);	

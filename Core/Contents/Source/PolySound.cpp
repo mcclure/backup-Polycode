@@ -153,10 +153,43 @@ void Sound::setOffset(int off) {
 	alSourcei(soundSource, AL_SAMPLE_OFFSET, off);
 }
 
+
+Number Sound::getPlaybackTime() {
+	float result = 0.0;
+	alGetSourcef(soundSource, AL_SEC_OFFSET, &result);
+	return result;
+}
+
+Number Sound::getPlaybackDuration() {
+	ALint sizeInBytes;
+	ALint channels;
+	ALint bits;
+	ALint bufferID;
+	alGetSourcei(soundSource, AL_BUFFER, &bufferID);
+	
+	alGetBufferi(bufferID, AL_SIZE, &sizeInBytes);
+	alGetBufferi(bufferID, AL_CHANNELS, &channels);
+	alGetBufferi(bufferID, AL_BITS, &bits);
+
+	int lengthInSamples = sizeInBytes * 8 / (channels * bits);
+
+	ALint frequency;
+	alGetBufferi(bufferID, AL_FREQUENCY, &frequency);
+	Number durationInSeconds = (float)lengthInSamples / (float)frequency;
+	
+	return durationInSeconds;
+}
+		
 int Sound::getOffset() {
 	ALint off = -1;
 	alGetSourcei(soundSource, AL_SAMPLE_OFFSET, &off);
 	return off;
+}
+
+void Sound::seekTo(Number time) {
+	if(time > getPlaybackDuration())
+		return;
+	alSourcef(soundSource, AL_SEC_OFFSET, time);
 }
 
 int Sound::getSampleLength() {
@@ -312,7 +345,7 @@ ALuint Sound::loadOGG(const String& fileName) {
 	} while (bytes > 0);
 	ov_clear(&oggFile);
 	
-	sampleLength = buffer.size() / sizeof(uint16_t);
+	sampleLength = buffer.size() / sizeof(unsigned short);
 	
 	alBufferData(bufferID, format, &buffer[0], static_cast<ALsizei>(buffer.size()), freq);
 	

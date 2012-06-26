@@ -40,8 +40,7 @@ namespace Polycode {
 	class _PolyExport PhysicsSceneEvent : public Event {
 		public:
 			PhysicsSceneEvent();
-			virtual ~PhysicsSceneEvent() {
-			}
+			~PhysicsSceneEvent();
 			
 			static const int COLLISION_EVENT = 0;
 			

@@ -37,6 +37,10 @@ PhysicsSceneEvent::PhysicsSceneEvent() : Event () {
 	eventType = "PhysicsSceneEvent";
 }
 
+PhysicsSceneEvent::~PhysicsSceneEvent() {
+
+}
+
 PhysicsScene::PhysicsScene(int maxSubSteps, bool virtualScene) : CollisionScene(virtualScene, true), physicsWorld(NULL), solver(NULL), broadphase(NULL), ghostPairCallback(NULL) {
 	this->maxSubSteps = maxSubSteps;
 	initPhysicsScene();
