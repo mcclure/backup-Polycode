@@ -3,16 +3,16 @@ import CppHeaderParser
 import os
 import errno
 import re
-
+  
 def mkdir_p(path): # Same effect as mkdir -p, create dir and all necessary parent dirs
-    try:
-        os.makedirs(path)
-    except OSError as e:
-        if e.errno == errno.EEXIST: # Dir already exists; not really an error
-            pass
-        else: raise
+	try:
+		os.makedirs(path)
+	except OSError as e:
+		if e.errno == errno.EEXIST: # Dir already exists; not really an error
+			pass
+		else: raise
 
-def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, apiPath, apiClassPath, includePath, sourcePath, inheritInModuleFiles):	
+def createLUABindings(inputPath, prefix, mainInclude, libSmallName, libName, apiPath, apiClassPath, includePath, sourcePath, inheritInModuleFiles):
 	out = ""
 	sout = ""
 	
